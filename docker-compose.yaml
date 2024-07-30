@@ -11,3 +11,15 @@ services:
     # Important to bind/mount your codebase dir to /app dir for live reload
     volumes:
       - ./:/app
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_USER: 'dbuser'
+      MYSQL_PASSWORD: 'dbpwd'
+      MYSQL_ROOT_PASSWORD: 'rootpwd'
+    container_name: "db"
+    ports:
+      - "8989:3306"
+    volumes:
+      - "./.docker/data/db/mysql:/var/lib/mysql"
