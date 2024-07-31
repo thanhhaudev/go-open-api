@@ -4,6 +4,8 @@ up:
 	docker compose -f docker-compose.yaml up -d
 down:
 	docker compose -f docker-compose.yaml down
+restart:
+	docker compose -f docker-compose.yaml restart web && make logs
 logs:
 	docker logs --since 120s web -f
 exec:
