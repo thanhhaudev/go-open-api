@@ -26,7 +26,7 @@ func (t tenantRepository) FindByKey(appKey, appSecret string) (*model.Tenant, er
 
 // NewTenantRepository creates a new tenant repository
 func NewTenantRepository(gorm *gorm.DB) repository.TenantRepository {
-	return tenantRepository{
+	return &tenantRepository{
 		gorm: gorm,
 	}
 }
