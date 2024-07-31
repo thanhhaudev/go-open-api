@@ -1,5 +1,9 @@
 package handler
 
+import (
+	"net/http"
+)
+
 type (
 	// AppHandler interface
 	AppHandler interface {
@@ -9,7 +13,7 @@ type (
 
 	// TenantHandler interface
 	TenantHandler interface {
-		// TODO
+		GetRefreshToken(http.ResponseWriter, *http.Request)
 	}
 
 	// UserHandler interface

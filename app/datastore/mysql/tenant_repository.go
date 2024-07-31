@@ -10,12 +10,12 @@ type tenantRepository struct {
 	gorm *gorm.DB
 }
 
-// FindByKey finds a tenant by app key and app secret
-func (t tenantRepository) FindByKey(appKey, appSecret string) (*model.Tenant, error) {
+// FindByKeys finds a tenant by app key and app secret
+func (t tenantRepository) FindByKeys(appKey, appSecret string) (*model.Tenant, error) {
 	tenant := &model.Tenant{}
 
 	err := t.gorm.
-		Where(`app_key = ? AND app_secret = ?`, appKey, appSecret).
+		Where(`api_key = ? AND api_secret = ?`, appKey, appSecret).
 		First(tenant).Error
 	if err != nil {
 		return nil, err

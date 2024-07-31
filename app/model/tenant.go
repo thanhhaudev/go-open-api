@@ -15,3 +15,7 @@ type Tenant struct {
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
+
+func (Tenant) TableName() string {
+	return "tenants"
+}

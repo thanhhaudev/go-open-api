@@ -1,13 +1,19 @@
 package app
 
 import (
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/thanhhaudev/openapi-go/app/handler"
-	"net/http"
+	"github.com/thanhhaudev/openapi-go/app/util"
 )
 
 func SetRoutes(r *mux.Router, h handler.AppHandler) {
-	r.HandleFunc("/api/health", func(w http.ResponseWriter, request *http.Request) {
-		w.Write([]byte("Gorilla!\n"))
+	s := r.PathPrefix("/api").Subrouter()
+	s.HandleFunc("/health", func(w http.ResponseWriter, request *http.Request) {
+		util.Response(w, map[string]bool{"ok": true}, http.StatusOK)
 	})
+
+	a := s.PathPrefix("/auth").Subrouter()
+	a.HandleFunc("/refresh", h.GetRefreshToken).Methods(http.MethodPost)
 }

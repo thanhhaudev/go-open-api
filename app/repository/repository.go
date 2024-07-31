@@ -4,7 +4,7 @@ import "github.com/thanhhaudev/openapi-go/app/model"
 
 type (
 	TenantRepository interface {
-		FindByKey(appKey, appSecret string) (*model.Tenant, error)
+		FindByKeys(appKey, appSecret string) (*model.Tenant, error)
 	}
 
 	UserRepository interface {
