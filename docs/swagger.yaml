@@ -1,4 +1,45 @@
+definitions:
+  error.AuthError:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  handler.AccessTokenRequest:
+    properties:
+      api_key:
+        type: string
+      api_secret:
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /api/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.AccessTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error.AuthError'
+      summary: Get refresh token
+      tags:
+      - auth
 swagger: "2.0"

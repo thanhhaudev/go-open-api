@@ -10,6 +10,7 @@ import (
 	"github.com/thanhhaudev/openapi-go/app"
 	"github.com/thanhhaudev/openapi-go/app/config"
 	"github.com/thanhhaudev/openapi-go/app/handler"
+	_ "github.com/thanhhaudev/openapi-go/docs"
 )
 
 func init() {

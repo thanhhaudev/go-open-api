@@ -20,7 +20,15 @@ type (
 	}
 )
 
-// GetRefreshToken godoc
+// GetRefreshToken	godoc
+// @Summary      	Get refresh token
+// @Tags         	auth
+// @Accept       	json
+// @Produce      	json
+// @Param			request body AccessTokenRequest true "request body"
+// @Success      	200  {object} map[string]interface{}
+// @Failure      	400  {object} error.AuthError
+// @Router       	/api/auth/refresh [post]
 func (t tenantHandler) GetRefreshToken(w http.ResponseWriter, r *http.Request) {
 	p := AccessTokenRequest{}
 	err := util.Inputs(r, &p)
