@@ -9,8 +9,8 @@ type Tenant struct {
 	ID        uint `gorm:"primarykey"`
 	Scope     string
 	Name      string
-	AppKey    string
-	AppSecret string
+	ApiKey    string
+	ApiSecret string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`

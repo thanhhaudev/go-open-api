@@ -8,6 +8,11 @@ definitions:
     type: object
   handler.AccessTokenRequest:
     properties:
+      refresh_token:
+        type: string
+    type: object
+  handler.RefreshTokenRequest:
+    properties:
       api_key:
         type: string
       api_secret:
@@ -16,7 +21,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /api/auth/refresh:
+  /api/auth/exchange:
     post:
       consumes:
       - application/json
@@ -27,6 +32,32 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/handler.AccessTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error.AuthError'
+      summary: Exchange refresh token for access token
+      tags:
+      - auth
+  /api/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.RefreshTokenRequest'
       produces:
       - application/json
       responses:

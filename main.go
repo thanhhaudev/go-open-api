@@ -24,8 +24,9 @@ func init() {
 func main() {
 	r := mux.NewRouter()
 	d := config.NewDatabase()
+	s := config.NewRedisStore()
 	h := handler.NewAppHandler(
-		handler.NewTenantHandler(d),
+		handler.NewTenantHandler(d, s),
 		handler.NewUserHandler(d),
 	)
 

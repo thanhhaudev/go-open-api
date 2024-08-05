@@ -2,9 +2,12 @@ package config
 
 import (
 	"fmt"
+	"os"
+	"time"
+
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"os"
 )
 
 type Database struct {
@@ -26,5 +29,26 @@ func NewDatabase() *Database {
 
 	return &Database{
 		Conn: open,
+	}
+}
+
+type RedisStore struct {
+	Client *redis.Client
+}
+
+// NewRedisStore creates a new RedisStore
+func NewRedisStore() *RedisStore {
+	client := redis.NewClient(&redis.Options{
+		Addr:         os.Getenv("REDIS_HOST"),
+		Password:     os.Getenv("REDIS_PASSWORD"),
+		DB:           0,
+		DialTimeout:  time.Second * 5,
+		WriteTimeout: time.Second * 3,
+		ReadTimeout:  time.Second * 3,
+		MaxRetries:   3,
+	})
+
+	return &RedisStore{
+		Client: client,
 	}
 }
