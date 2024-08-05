@@ -15,6 +15,6 @@ func SetRoutes(r *mux.Router, h handler.AppHandler) {
 	})
 
 	a := s.PathPrefix("/auth").Subrouter()
-	a.HandleFunc("/refresh", h.GetRefreshToken).Methods(http.MethodPost)
+	a.HandleFunc("/access", h.GetRefreshToken).Methods(http.MethodPost)
 	a.HandleFunc("/exchange", h.GetAccessToken).Methods(http.MethodPost)
 }

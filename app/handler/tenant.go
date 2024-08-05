@@ -16,12 +16,12 @@ type (
 		logger        *logrus.Logger
 	}
 
-	RefreshTokenRequest struct {
+	AccessTokenRequest struct {
 		ApiKey    string `json:"api_key"`
 		ApiSecret string `json:"api_secret"`
 	}
 
-	AccessTokenRequest struct {
+	ExchangeTokenRequest struct {
 		RefreshToken string `json:"refresh_token"`
 	}
 )
@@ -31,12 +31,12 @@ type (
 // @Tags         	auth
 // @Accept       	json
 // @Produce      	json
-// @Param			request body AccessTokenRequest true "request body"
+// @Param			request body ExchangeTokenRequest true "request body"
 // @Success      	200  {object} map[string]interface{}
 // @Failure      	400  {object} error.AuthError
 // @Router       	/api/auth/exchange [post]
 func (t tenantHandler) GetAccessToken(w http.ResponseWriter, r *http.Request) {
-	p := AccessTokenRequest{}
+	p := ExchangeTokenRequest{}
 	err := util.Inputs(r, &p)
 	if err != nil {
 		t.logger.WithError(err).Error("Failed to parse request body")
@@ -55,16 +55,16 @@ func (t tenantHandler) GetAccessToken(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetRefreshToken	godoc
-// @Summary      	Get refresh token
+// @Summary      	Get refresh token by API key and secret
 // @Tags         	auth
 // @Accept       	json
 // @Produce      	json
-// @Param			request body RefreshTokenRequest true "request body"
+// @Param			request body AccessTokenRequest true "request body"
 // @Success      	200  {object} map[string]interface{}
 // @Failure      	400  {object} error.AuthError
-// @Router       	/api/auth/refresh [post]
+// @Router       	/api/auth/access [post]
 func (t tenantHandler) GetRefreshToken(w http.ResponseWriter, r *http.Request) {
-	p := RefreshTokenRequest{}
+	p := AccessTokenRequest{}
 	err := util.Inputs(r, &p)
 	if err != nil {
 		t.logger.WithError(err).Error("Failed to parse request body")

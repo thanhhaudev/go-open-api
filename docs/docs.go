@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/auth/exchange": {
+        "/api/auth/access": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -26,7 +26,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Exchange refresh token for access token",
+                "summary": "Get refresh token by API key and secret",
                 "parameters": [
                     {
                         "description": "request body",
@@ -55,7 +55,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/auth/refresh": {
+        "/api/auth/exchange": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -66,7 +66,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Get refresh token",
+                "summary": "Exchange refresh token for access token",
                 "parameters": [
                     {
                         "description": "request body",
@@ -74,7 +74,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.RefreshTokenRequest"
+                            "$ref": "#/definitions/handler.ExchangeTokenRequest"
                         }
                     }
                 ],
@@ -111,18 +111,18 @@ const docTemplate = `{
         "handler.AccessTokenRequest": {
             "type": "object",
             "properties": {
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.RefreshTokenRequest": {
-            "type": "object",
-            "properties": {
                 "api_key": {
                     "type": "string"
                 },
                 "api_secret": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.ExchangeTokenRequest": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
                     "type": "string"
                 }
             }
