@@ -10,9 +10,9 @@ type (
 
 	UserRepository interface {
 		FindAll() ([]*model.User, error)
-		FindByID(id int64) (*model.User, error)
+		FindByID(id uint) (*model.User, error)
 		Create(user *model.User) error
 		Update(user *model.User) error
-		Delete(id int64) error
+		Delete(id uint) error
 	}
 )

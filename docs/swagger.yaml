@@ -6,6 +6,21 @@ definitions:
       message:
         type: string
     type: object
+  error.UserError:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
   handler.AccessTokenRequest:
     properties:
       api_key:
@@ -21,6 +36,23 @@ definitions:
   handler.RefreshTokenRequest:
     properties:
       access_token:
+        type: string
+    type: object
+  model.User:
+    properties:
+      created_at:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      phone_number:
+        type: string
+      updatedAt:
         type: string
     type: object
 info:
@@ -116,4 +148,60 @@ paths:
       summary: Retrieve a new access token
       tags:
       - auth
+  /api/users:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.User'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error.AuthError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error.AuthError'
+      summary: Get all users
+      tags:
+      - user
+  /api/users/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error.UserError'
+      summary: Find user by ID
+      tags:
+      - user
 swagger: "2.0"

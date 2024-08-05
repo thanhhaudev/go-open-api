@@ -20,7 +20,8 @@ type (
 
 	// UserHandler interface
 	UserHandler interface {
-		GetUser() string
+		GetUsers(http.ResponseWriter, *http.Request)
+		FindUser(http.ResponseWriter, *http.Request)
 	}
 
 	// Handler struct

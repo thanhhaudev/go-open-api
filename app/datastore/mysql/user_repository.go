@@ -21,7 +21,7 @@ func (u userRepository) FindAll() ([]*model.User, error) {
 	return r, nil
 }
 
-func (u userRepository) FindByID(id int64) (*model.User, error) {
+func (u userRepository) FindByID(id uint) (*model.User, error) {
 	user := &model.User{}
 
 	err := u.gorm.First(user, id).Error
@@ -50,7 +50,7 @@ func (u userRepository) Update(user *model.User) error {
 	return nil
 }
 
-func (u userRepository) Delete(id int64) error {
+func (u userRepository) Delete(id uint) error {
 	err := u.gorm.Delete(&model.User{}, id).Error
 	if err != nil {
 		return err
