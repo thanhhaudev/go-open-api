@@ -18,6 +18,11 @@ definitions:
       refresh_token:
         type: string
     type: object
+  handler.RefreshTokenRequest:
+    properties:
+      access_token:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -42,6 +47,10 @@ paths:
             type: object
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/error.AuthError'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/error.AuthError'
       summary: Get refresh token by API key and secret
@@ -70,7 +79,41 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/error.AuthError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error.AuthError'
       summary: Exchange refresh token for access token
+      tags:
+      - auth
+  /api/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error.AuthError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error.AuthError'
+      summary: Retrieve a new access token
       tags:
       - auth
 swagger: "2.0"

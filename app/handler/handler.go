@@ -15,6 +15,7 @@ type (
 	TenantHandler interface {
 		GetRefreshToken(http.ResponseWriter, *http.Request)
 		GetAccessToken(http.ResponseWriter, *http.Request)
+		RefreshAccessToken(http.ResponseWriter, *http.Request)
 	}
 
 	// UserHandler interface

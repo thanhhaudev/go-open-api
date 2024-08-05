@@ -19,6 +19,7 @@ type (
 	TenantService interface {
 		GetRefreshToken(ctx context.Context, key string, secret string) (map[string]interface{}, error)
 		GetAccessToken(ctx context.Context, refreshToken string) (map[string]interface{}, error)
+		RefreshAccessToken(ctx context.Context, accessToken string) (map[string]interface{}, error)
 	}
 
 	tenantService struct {
@@ -27,6 +28,105 @@ type (
 		logger           *logrus.Logger
 	}
 )
+
+// RefreshAccessToken retrieves a new access token
+func (s *tenantService) RefreshAccessToken(ctx context.Context, accessToken string) (map[string]interface{}, error) {
+	s.logger.WithFields(logrus.Fields{
+		"accessToken": accessToken,
+	}).Info("RefreshAccessToken called")
+
+	if len(accessToken) == 0 {
+		return nil, &appErr.AuthError{
+			Message: "Invalid access token",
+			Code:    http.StatusBadRequest,
+		}
+	}
+
+	// Retrieve the API key from Redis
+	apiKey, err := s.RedisClient.Get(ctx, fmt.Sprintf("%s.%s", common.AuthAccessTokenPrefix, accessToken)).Result()
+	if err != nil {
+		s.logger.WithError(err).Error("Failed to get API key from Redis")
+
+		return nil, &appErr.AuthError{
+			Message: "Internal server error",
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	tenant, err := s.TenantRepository.FindByApiKey(apiKey)
+	if err != nil {
+		s.logger.WithError(err).Error("Failed to find tenant by API key")
+
+		return nil, &appErr.AuthError{
+			Message: "Internal server error",
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	// verify the access token
+	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+
+		return []byte(tenant.ApiSecret), nil
+	},
+		jwt.WithAudience("tenant"),
+		jwt.WithIssuer("localhost"),
+		jwt.WithExpirationRequired(),
+	)
+
+	if err != nil {
+		s.logger.WithError(err).Error("Failed to parse access token")
+
+		return nil, &appErr.AuthError{
+			Message: "Internal server error",
+			Code:    http.StatusBadRequest,
+		}
+	}
+
+	if !token.Valid {
+		s.logger.Error("Invalid access token")
+
+		return nil, &appErr.AuthError{
+			Message: "Invalid access token",
+			Code:    http.StatusBadRequest,
+		}
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		s.logger.Error("Failed to get claims from access token")
+
+		return nil, &appErr.AuthError{
+			Message: "Internal server error",
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	claims["exp"] = time.Now().Unix() + common.AuthAccessTokenExpire
+	token = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	newAccessToken, err := token.SignedString([]byte(tenant.ApiSecret))
+	if err != nil {
+		s.logger.WithError(err).Error("Failed to build access token")
+
+		return nil, &appErr.AuthError{
+			Message: "Internal server error",
+			Code:    http.StatusInternalServerError,
+		}
+	}
+
+	// Save the access token to Redis
+	s.RedisClient.Set(ctx, fmt.Sprintf("%s.%s", common.AuthAccessTokenPrefix, newAccessToken), tenant.ApiKey, time.Duration(common.AuthAccessTokenExpire)*time.Second)
+
+	// Delete the old access token
+	s.RedisClient.Del(ctx, fmt.Sprintf("%s.%s", common.AuthAccessTokenPrefix, accessToken))
+
+	return map[string]interface{}{
+		"access_token": newAccessToken,
+		"expires_in":   common.AuthAccessTokenExpire,
+	}, nil
+}
 
 // GetAccessToken gets an access token
 func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string) (map[string]interface{}, error) {

@@ -24,7 +24,40 @@ type (
 	ExchangeTokenRequest struct {
 		RefreshToken string `json:"refresh_token"`
 	}
+
+	RefreshTokenRequest struct {
+		AccessToken string `json:"access_token"`
+	}
 )
+
+// RefreshAccessToken	godoc
+// @Summary      		Retrieve a new access token
+// @Tags         		auth
+// @Accept       		json
+// @Produce      		json
+// @Param				request body RefreshTokenRequest true "request body"
+// @Success      		200  {object} map[string]interface{}
+// @Failure      		400  {object} error.AuthError
+// @Failure      		500  {object} error.AuthError
+// @Router       		/api/auth/refresh [post]
+func (t tenantHandler) RefreshAccessToken(w http.ResponseWriter, r *http.Request) {
+	p := RefreshTokenRequest{}
+	err := util.Inputs(r, &p)
+	if err != nil {
+		t.logger.WithError(err).Error("Failed to parse request body")
+		util.Response(w, err.Error(), http.StatusBadRequest)
+
+		return
+	}
+
+	data, err := t.tenantService.RefreshAccessToken(r.Context(), p.AccessToken)
+	if err != nil {
+		util.Response(w, err, http.StatusBadRequest)
+		return
+	}
+
+	util.Response(w, map[string]interface{}{"code": http.StatusOK, "data": data}, http.StatusOK)
+}
 
 // GetAccessToken	godoc
 // @Summary      	Exchange refresh token for access token
@@ -34,6 +67,7 @@ type (
 // @Param			request body ExchangeTokenRequest true "request body"
 // @Success      	200  {object} map[string]interface{}
 // @Failure      	400  {object} error.AuthError
+// @Failure      	500  {object} error.AuthError
 // @Router       	/api/auth/exchange [post]
 func (t tenantHandler) GetAccessToken(w http.ResponseWriter, r *http.Request) {
 	p := ExchangeTokenRequest{}
@@ -62,6 +96,7 @@ func (t tenantHandler) GetAccessToken(w http.ResponseWriter, r *http.Request) {
 // @Param			request body AccessTokenRequest true "request body"
 // @Success      	200  {object} map[string]interface{}
 // @Failure      	400  {object} error.AuthError
+// @Failure      	500  {object} error.AuthError
 // @Router       	/api/auth/access [post]
 func (t tenantHandler) GetRefreshToken(w http.ResponseWriter, r *http.Request) {
 	p := AccessTokenRequest{}
