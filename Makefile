@@ -5,10 +5,10 @@ up:
 down:
 	docker compose -f docker-compose.yaml down
 restart:
-	docker compose -f docker-compose.yaml restart web && make logs
+	docker compose -f docker-compose.yaml restart api && make logs
 logs:
-	docker logs --since 120s web -f
+	docker logs --since 120s go_api -f
 exec:
-	docker exec -it web sh
+	docker exec -it go_api sh
 mysql:
-	docker compose -f docker-compose.yaml exec db mysql -u root -p
+	docker compose -f docker-compose.yaml exec go_api_db mysql -u root -p
