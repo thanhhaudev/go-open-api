@@ -8,6 +8,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/redis/go-redis/v9"
+	"github.com/sirupsen/logrus"
 	"github.com/thanhhaudev/openapi-go/app/common"
 	appErr "github.com/thanhhaudev/openapi-go/app/error"
 	"github.com/thanhhaudev/openapi-go/app/model"
@@ -23,11 +24,16 @@ type (
 	tenantService struct {
 		TenantRepository repository.TenantRepository
 		RedisClient      *redis.Client
+		logger           *logrus.Logger
 	}
 )
 
 // GetAccessToken gets an access token
 func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string) (map[string]interface{}, error) {
+	s.logger.WithFields(logrus.Fields{
+		"refreshToken": refreshToken,
+	}).Info("GetAccessToken called")
+
 	if len(refreshToken) == 0 {
 		return nil, &appErr.AuthError{
 			Message: "Invalid refresh token",
@@ -38,6 +44,8 @@ func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string)
 	// Retrieve the API key from Redis
 	apiKey, err := s.RedisClient.Get(ctx, fmt.Sprintf("%s.%s", common.AuthRefreshTokenPrefix, refreshToken)).Result()
 	if err != nil {
+		s.logger.WithError(err).Error("Failed to get API key from Redis")
+
 		return nil, &appErr.AuthError{
 			Message: "Internal server error",
 			Code:    http.StatusInternalServerError,
@@ -46,6 +54,8 @@ func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string)
 
 	tenant, err := s.TenantRepository.FindByApiKey(apiKey)
 	if err != nil {
+		s.logger.WithError(err).Error("Failed to find tenant by API key")
+
 		return nil, &appErr.AuthError{
 			Message: "Internal server error",
 			Code:    http.StatusInternalServerError,
@@ -66,6 +76,8 @@ func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string)
 	)
 
 	if err != nil {
+		s.logger.WithError(err).Error("Failed to parse refresh token")
+
 		return nil, &appErr.AuthError{
 			Message: "Internal server error",
 			Code:    http.StatusBadRequest,
@@ -73,6 +85,8 @@ func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string)
 	}
 
 	if !token.Valid {
+		s.logger.Error("Invalid refresh token")
+
 		return nil, &appErr.AuthError{
 			Message: "Invalid refresh token",
 			Code:    http.StatusBadRequest,
@@ -82,6 +96,8 @@ func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string)
 	expiresIn := common.AuthAccessTokenExpire // 2 days
 	accessToken, err := buildToken(tenant, expiresIn)
 	if err != nil {
+		s.logger.WithError(err).Error("Failed to build access token")
+
 		return nil, err
 	}
 
@@ -108,6 +124,8 @@ func (s *tenantService) GetRefreshToken(ctx context.Context, key string, secret 
 	expiresIn := common.AuthRefreshTokenExpire
 	refreshToken, err := buildToken(tenant, expiresIn)
 	if err != nil {
+		s.logger.WithError(err).Error("Failed to build access token")
+
 		return nil, err
 	}
 
@@ -136,19 +154,17 @@ func buildToken(tenant *model.Tenant, e int64) (string, error) {
 
 	refreshToken, err := token.SignedString([]byte(tenant.ApiSecret))
 	if err != nil {
-		return "", &appErr.AuthError{
-			Message: "Internal server error",
-			Code:    http.StatusInternalServerError,
-		}
+		return "", err
 	}
 
 	return refreshToken, nil
 }
 
 // NewTenantService creates a new TenantService
-func NewTenantService(r repository.TenantRepository, s *redis.Client) TenantService {
+func NewTenantService(r repository.TenantRepository, s *redis.Client, l *logrus.Logger) TenantService {
 	return &tenantService{
 		TenantRepository: r,
 		RedisClient:      s,
+		logger:           l,
 	}
 }

@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/sirupsen/logrus"
 	"github.com/thanhhaudev/openapi-go/app/config"
 	"github.com/thanhhaudev/openapi-go/app/datastore/mysql"
 	"github.com/thanhhaudev/openapi-go/app/service"
@@ -12,6 +13,7 @@ import (
 type (
 	tenantHandler struct {
 		tenantService service.TenantService
+		logger        *logrus.Logger
 	}
 
 	RefreshTokenRequest struct {
@@ -37,7 +39,9 @@ func (t tenantHandler) GetAccessToken(w http.ResponseWriter, r *http.Request) {
 	p := AccessTokenRequest{}
 	err := util.Inputs(r, &p)
 	if err != nil {
+		t.logger.WithError(err).Error("Failed to parse request body")
 		util.Response(w, err.Error(), http.StatusBadRequest)
+
 		return
 	}
 
@@ -63,13 +67,17 @@ func (t tenantHandler) GetRefreshToken(w http.ResponseWriter, r *http.Request) {
 	p := RefreshTokenRequest{}
 	err := util.Inputs(r, &p)
 	if err != nil {
+		t.logger.WithError(err).Error("Failed to parse request body")
 		util.Response(w, err.Error(), http.StatusBadRequest)
+
 		return
 	}
 
 	data, err := t.tenantService.GetRefreshToken(r.Context(), p.ApiKey, p.ApiSecret)
 	if err != nil {
+		t.logger.WithError(err).Error("Failed to get refresh token")
 		util.Response(w, err, http.StatusBadRequest)
+
 		return
 	}
 
@@ -79,8 +87,10 @@ func (t tenantHandler) GetRefreshToken(w http.ResponseWriter, r *http.Request) {
 // NewTenantHandler creates a new TenantHandler
 func NewTenantHandler(db *config.Database, s *config.RedisStore) TenantHandler {
 	r := mysql.NewTenantRepository(db.Conn)
+	l := config.GetLogger()
 
 	return &tenantHandler{
-		tenantService: service.NewTenantService(r, s.Client),
+		tenantService: service.NewTenantService(r, s.Client, l),
+		logger:        l,
 	}
 }
