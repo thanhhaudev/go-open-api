@@ -8,7 +8,7 @@ import (
 	"github.com/thanhhaudev/openapi-go/app/util"
 )
 
-func SetRoutes(r *mux.Router, h handler.AppHandler) {
+func SetRoutes(r *mux.Router, h handler.AppHandler, ms ...mux.MiddlewareFunc) {
 	s := r.PathPrefix("/api").Subrouter()
 	s.HandleFunc("/health", func(w http.ResponseWriter, request *http.Request) {
 		util.Response(w, map[string]bool{"ok": true}, http.StatusOK)
@@ -20,6 +20,7 @@ func SetRoutes(r *mux.Router, h handler.AppHandler) {
 	a.HandleFunc("/refresh", h.RefreshAccessToken).Methods(http.MethodPost)
 
 	u := s.PathPrefix("/users").Subrouter()
+	u.Use(ms...)
 	u.HandleFunc("", h.GetUsers).Methods(http.MethodGet)
 	u.HandleFunc("/{id:[0-9]+}", h.FindUser).Methods(http.MethodGet)
 }

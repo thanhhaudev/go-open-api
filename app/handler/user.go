@@ -7,9 +7,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
-	"github.com/thanhhaudev/openapi-go/app/config"
-	"github.com/thanhhaudev/openapi-go/app/datastore/mysql"
 	appErr "github.com/thanhhaudev/openapi-go/app/error"
+	"github.com/thanhhaudev/openapi-go/app/repository"
 	"github.com/thanhhaudev/openapi-go/app/service"
 	"github.com/thanhhaudev/openapi-go/app/util"
 )
@@ -69,10 +68,7 @@ func (u userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewUserHandler creates a new UserHandler
-func NewUserHandler(db *config.Database) UserHandler {
-	r := mysql.NewUserRepository(db.Conn)
-	l := config.GetLogger()
-
+func NewUserHandler(r repository.UserRepository, l *logrus.Logger) UserHandler {
 	return &userHandler{
 		userService: service.NewUserService(r, l),
 		logger:      l,

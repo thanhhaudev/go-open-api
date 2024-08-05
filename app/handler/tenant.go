@@ -5,7 +5,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/thanhhaudev/openapi-go/app/config"
-	"github.com/thanhhaudev/openapi-go/app/datastore/mysql"
+	"github.com/thanhhaudev/openapi-go/app/repository"
 	"github.com/thanhhaudev/openapi-go/app/service"
 	"github.com/thanhhaudev/openapi-go/app/util"
 )
@@ -120,10 +120,7 @@ func (t tenantHandler) GetRefreshToken(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewTenantHandler creates a new TenantHandler
-func NewTenantHandler(db *config.Database, s *config.RedisStore) TenantHandler {
-	r := mysql.NewTenantRepository(db.Conn)
-	l := config.GetLogger()
-
+func NewTenantHandler(r repository.TenantRepository, l *logrus.Logger, s *config.RedisStore) TenantHandler {
 	return &tenantHandler{
 		tenantService: service.NewTenantService(r, s.Client, l),
 		logger:        l,

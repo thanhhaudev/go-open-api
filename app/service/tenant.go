@@ -234,9 +234,9 @@ func (s *tenantService) GetRefreshToken(ctx context.Context, key string, secret 
 	s.RedisClient.Set(ctx, fmt.Sprintf("%s.%s", common.AuthRefreshTokenPrefix, refreshToken), tenant.ApiKey, time.Duration(expiresIn)*time.Second)
 
 	return map[string]interface{}{
-		"access_token": refreshToken,
-		"expires_in":   expiresIn,
-		"scope":        tenant.Scope,
+		"refresh_token": refreshToken,
+		"expires_in":    expiresIn,
+		"scope":         tenant.Scope,
 	}, nil
 }
 
