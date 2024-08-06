@@ -18,7 +18,7 @@ type AuthMiddleware struct {
 	TenantRepository repository.TenantRepository
 }
 
-func (a AuthMiddleware) Verify(next http.Handler) http.Handler {
+func (a AuthMiddleware) VerifyToken(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		auth := r.Header.Get("Authorization")
 		if len(auth) == 0 {

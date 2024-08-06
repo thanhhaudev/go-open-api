@@ -89,7 +89,7 @@ func (t tenantHandler) GetAccessToken(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetRefreshToken	godoc
-// @Summary      	Get refresh token by API key and secret
+// @Summary      	Retrieve refresh token using API key and secret
 // @Tags         	auth
 // @Accept       	json
 // @Produce      	json

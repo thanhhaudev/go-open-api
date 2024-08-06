@@ -15,7 +15,7 @@
                 "tags": [
                     "auth"
                 ],
-                "summary": "Get refresh token by API key and secret",
+                "summary": "Retrieve refresh token using API key and secret",
                 "parameters": [
                     {
                         "description": "request body",
@@ -142,7 +142,7 @@
                 }
             }
         },
-        "/api/users": {
+        "/api/v1/users": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -153,7 +153,7 @@
                 "tags": [
                     "user"
                 ],
-                "summary": "Get all users",
+                "summary": "Retrieve all users",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -179,7 +179,7 @@
                 }
             }
         },
-        "/api/users/{id}": {
+        "/api/v1/users/{id}": {
             "get": {
                 "consumes": [
                     "application/json"

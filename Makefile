@@ -12,3 +12,5 @@ exec:
 	docker exec -it go_api sh
 mysql:
 	docker compose -f docker-compose.yaml exec go_api_db mysql -u root -p
+swag:
+	swag init --parseDependency

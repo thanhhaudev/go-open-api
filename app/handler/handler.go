@@ -29,6 +29,12 @@ type (
 		TenantHandler
 		UserHandler
 	}
+
+	route struct {
+		HandlerFunc http.HandlerFunc
+		Path        string
+		Method      string
+	}
 )
 
 // NewAppHandler godoc

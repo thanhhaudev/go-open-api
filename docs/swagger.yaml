@@ -85,7 +85,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/error.AuthError'
-      summary: Get refresh token by API key and secret
+      summary: Retrieve refresh token using API key and secret
       tags:
       - auth
   /api/auth/exchange:
@@ -148,7 +148,7 @@ paths:
       summary: Retrieve a new access token
       tags:
       - auth
-  /api/users:
+  /api/v1/users:
     get:
       consumes:
       - application/json
@@ -169,10 +169,10 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/error.AuthError'
-      summary: Get all users
+      summary: Retrieve all users
       tags:
       - user
-  /api/users/{id}:
+  /api/v1/users/{id}:
     get:
       consumes:
       - application/json

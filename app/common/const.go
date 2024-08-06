@@ -5,4 +5,7 @@ const (
 	AuthRefreshTokenPrefix       = "refresh_token"
 	AuthAccessTokenPrefix        = "access_token"
 	AuthAccessTokenExpire  int64 = 30 * 60
+
+	ScopeManageUser    = "MANAGE_USER"
+	ScopeManageMessage = "MANAGE_MESSAGE"
 )

@@ -28,7 +28,7 @@ type userHandler struct {
 // @Failure     404  {object} error.UserError
 // @Failure     400  {object} error.UserError
 // @Failure     500  {object} error.UserError
-// @Router      /api/users/{id} [get]
+// @Router      /api/v1/users/{id} [get]
 func (u userHandler) FindUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
@@ -49,14 +49,14 @@ func (u userHandler) FindUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetUsers		godoc
-// @Summary     Get all users
+// @Summary     Retrieve all users
 // @Tags        user
 // @Accept      json
 // @Produce     json
 // @Success     200  {object} []model.User
 // @Failure     400  {object} error.AuthError
 // @Failure     500  {object} error.AuthError
-// @Router      /api/users [get]
+// @Router      /api/v1/users [get]
 func (u userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	data, err := u.userService.GetUsers()
 	if err != nil {

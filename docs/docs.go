@@ -26,7 +26,7 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Get refresh token by API key and secret",
+                "summary": "Retrieve refresh token using API key and secret",
                 "parameters": [
                     {
                         "description": "request body",
@@ -153,7 +153,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/users": {
+        "/api/v1/users": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -164,7 +164,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Get all users",
+                "summary": "Retrieve all users",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -190,7 +190,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/users/{id}": {
+        "/api/v1/users/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
