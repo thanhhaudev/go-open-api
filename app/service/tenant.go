@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -45,6 +46,13 @@ func (s *tenantService) RefreshAccessToken(ctx context.Context, accessToken stri
 	// Retrieve the API key from Redis
 	apiKey, err := s.RedisClient.Get(ctx, fmt.Sprintf("%s.%s", common.AuthAccessTokenPrefix, accessToken)).Result()
 	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return nil, &appErr.AuthError{
+				Message: "Invalid access token",
+				Code:    http.StatusBadRequest,
+			}
+		}
+
 		s.logger.WithError(err).Error("Failed to get API key from Redis")
 
 		return nil, &appErr.AuthError{
@@ -144,6 +152,13 @@ func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string)
 	// Retrieve the API key from Redis
 	apiKey, err := s.RedisClient.Get(ctx, fmt.Sprintf("%s.%s", common.AuthRefreshTokenPrefix, refreshToken)).Result()
 	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			return nil, &appErr.AuthError{
+				Message: "Invalid refresh token",
+				Code:    http.StatusBadRequest,
+			}
+		}
+
 		s.logger.WithError(err).Error("Failed to get API key from Redis")
 
 		return nil, &appErr.AuthError{
