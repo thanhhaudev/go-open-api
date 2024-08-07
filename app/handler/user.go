@@ -81,8 +81,7 @@ func (u userHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 func (u userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
-	user, err := u.userService.FindUserByID(uint(id))
-	if err != nil {
+	if err := u.userService.DeleteUser(uint(id)); err != nil {
 		var notFound *appErr.UserNotFoundError
 		if errors.As(err, &notFound) {
 			util.Response(w, err, http.StatusNotFound)
@@ -90,11 +89,6 @@ func (u userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		util.Response(w, err, http.StatusBadRequest)
-		return
-	}
-
-	if err := u.userService.DeleteUser(user); err != nil {
 		util.Response(w, err, http.StatusBadRequest)
 		return
 	}

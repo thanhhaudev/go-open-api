@@ -17,7 +17,7 @@ type (
 		FindUserByID(id uint) (*model.User, error)
 		CreateUser(user *model.User) (*model.User, error)
 		UpdateUser(id uint, com *command.UserRequest) (*model.User, error)
-		DeleteUser(user *model.User) error
+		DeleteUser(id uint) error
 	}
 
 	userService struct {
@@ -61,7 +61,16 @@ func (u userService) UpdateUser(id uint, com *command.UserRequest) (*model.User,
 }
 
 // DeleteUser deletes a user
-func (u userService) DeleteUser(user *model.User) error {
+func (u userService) DeleteUser(id uint) error {
+	user, err := u.userRepository.FindByID(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return appErr.NewUserNotFoundError()
+		}
+
+		return err
+	}
+
 	if err := u.userRepository.Delete(user); err != nil {
 		return err
 	}
