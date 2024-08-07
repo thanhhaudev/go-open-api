@@ -17,14 +17,15 @@ type (
 	}
 
 	userService struct {
-		UserRepository repository.UserRepository
-		logger         *logrus.Logger
+		userRepository        repository.UserRepository
+		userMessageRepository repository.UserMessageRepository
+		logger                *logrus.Logger
 	}
 )
 
 // FindUserByID retrieves a user by ID
 func (u userService) FindUserByID(id uint) (*model.User, error) {
-	r, err := u.UserRepository.FindByID(id)
+	r, err := u.userRepository.FindByID(id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, appErr.NewUserNotFoundError()
@@ -38,13 +39,18 @@ func (u userService) FindUserByID(id uint) (*model.User, error) {
 
 // GetUsers retrieves all users
 func (u userService) GetUsers() ([]*model.User, error) {
-	return u.UserRepository.FindAll()
+	return u.userRepository.FindAll()
 }
 
 // NewUserService creates a new UserService
-func NewUserService(r repository.UserRepository, l *logrus.Logger) UserService {
+func NewUserService(
+	userRepo repository.UserRepository,
+	userMessageRepo repository.UserMessageRepository,
+	logger *logrus.Logger,
+) UserService {
 	return &userService{
-		UserRepository: r,
-		logger:         l,
+		userRepository:        userRepo,
+		userMessageRepository: userMessageRepo,
+		logger:                logger,
 	}
 }

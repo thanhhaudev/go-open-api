@@ -24,6 +24,10 @@ type (
 		FindUser(http.ResponseWriter, *http.Request)
 	}
 
+	MessageHandler interface {
+		// TODO
+	}
+
 	// Handler struct
 	appHandler struct {
 		TenantHandler

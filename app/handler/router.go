@@ -14,13 +14,14 @@ import (
 )
 
 var (
-	routeHandler AppHandler
-	routeMap     map[string][]*route // map[scope][route]
-	db           *config.Database
-	redisStore   *config.RedisStore
-	logger       *logrus.Logger
-	tenantRepo   repository.TenantRepository
-	userRepo     repository.UserRepository
+	routeHandler    AppHandler
+	routeMap        map[string][]*route // map[scope][route]
+	db              *config.Database
+	redisStore      *config.RedisStore
+	logger          *logrus.Logger
+	tenantRepo      repository.TenantRepository
+	userRepo        repository.UserRepository
+	userMessageRepo repository.UserMessageRepository
 )
 
 // inject dependencies
@@ -32,7 +33,7 @@ func inject() {
 	userRepo = mysql.NewUserRepository(db.Conn)
 	routeHandler = NewAppHandler(
 		NewTenantHandler(tenantRepo, logger, redisStore),
-		NewUserHandler(userRepo, logger),
+		NewUserHandler(userRepo, userMessageRepo, logger),
 	)
 
 	routeMap = map[string][]*route{
@@ -48,6 +49,7 @@ func inject() {
 				http.MethodGet,
 			},
 		},
+		common.ScopeManageMessage: {},
 	}
 }
 

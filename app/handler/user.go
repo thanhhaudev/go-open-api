@@ -68,9 +68,13 @@ func (u userHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewUserHandler creates a new UserHandler
-func NewUserHandler(r repository.UserRepository, l *logrus.Logger) UserHandler {
+func NewUserHandler(
+	userRepo repository.UserRepository,
+	userMessageRepo repository.UserMessageRepository,
+	logger *logrus.Logger,
+) UserHandler {
 	return &userHandler{
-		userService: service.NewUserService(r, l),
-		logger:      l,
+		userService: service.NewUserService(userRepo, userMessageRepo, logger),
+		logger:      logger,
 	}
 }

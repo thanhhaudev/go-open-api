@@ -24,8 +24,8 @@ type (
 	}
 
 	tenantService struct {
-		TenantRepository repository.TenantRepository
-		RedisClient      *redis.Client
+		tenantRepository repository.TenantRepository
+		redisClient      *redis.Client
 		logger           *logrus.Logger
 	}
 )
@@ -44,7 +44,7 @@ func (s *tenantService) RefreshAccessToken(ctx context.Context, accessToken stri
 	}
 
 	// Retrieve the API key from Redis
-	apiKey, err := s.RedisClient.Get(ctx, fmt.Sprintf("%s.%s", common.AuthAccessTokenPrefix, accessToken)).Result()
+	apiKey, err := s.redisClient.Get(ctx, fmt.Sprintf("%s.%s", common.AuthAccessTokenPrefix, accessToken)).Result()
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return nil, &appErr.AuthError{
@@ -61,7 +61,7 @@ func (s *tenantService) RefreshAccessToken(ctx context.Context, accessToken stri
 		}
 	}
 
-	tenant, err := s.TenantRepository.FindByApiKey(apiKey)
+	tenant, err := s.tenantRepository.FindByApiKey(apiKey)
 	if err != nil {
 		s.logger.WithError(err).Error("Failed to find tenant by API key")
 
@@ -126,10 +126,10 @@ func (s *tenantService) RefreshAccessToken(ctx context.Context, accessToken stri
 	}
 
 	// Save the access token to Redis
-	s.RedisClient.Set(ctx, fmt.Sprintf("%s.%s", common.AuthAccessTokenPrefix, newAccessToken), tenant.ApiKey, time.Duration(common.AuthAccessTokenExpire)*time.Second)
+	s.redisClient.Set(ctx, fmt.Sprintf("%s.%s", common.AuthAccessTokenPrefix, newAccessToken), tenant.ApiKey, time.Duration(common.AuthAccessTokenExpire)*time.Second)
 
 	// Delete the old access token
-	s.RedisClient.Del(ctx, fmt.Sprintf("%s.%s", common.AuthAccessTokenPrefix, accessToken))
+	s.redisClient.Del(ctx, fmt.Sprintf("%s.%s", common.AuthAccessTokenPrefix, accessToken))
 
 	return map[string]interface{}{
 		"access_token": newAccessToken,
@@ -152,7 +152,7 @@ func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string)
 	}
 
 	// Retrieve the API key from Redis
-	apiKey, err := s.RedisClient.Get(ctx, fmt.Sprintf("%s.%s", common.AuthRefreshTokenPrefix, refreshToken)).Result()
+	apiKey, err := s.redisClient.Get(ctx, fmt.Sprintf("%s.%s", common.AuthRefreshTokenPrefix, refreshToken)).Result()
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			return nil, &appErr.AuthError{
@@ -169,7 +169,7 @@ func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string)
 		}
 	}
 
-	tenant, err := s.TenantRepository.FindByApiKey(apiKey)
+	tenant, err := s.tenantRepository.FindByApiKey(apiKey)
 	if err != nil {
 		s.logger.WithError(err).Error("Failed to find tenant by API key")
 
@@ -219,7 +219,7 @@ func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string)
 	}
 
 	// Save the access token to Redis
-	s.RedisClient.Set(ctx, fmt.Sprintf("%s.%s", common.AuthAccessTokenPrefix, accessToken), tenant.ApiKey, time.Duration(expiresIn)*time.Second)
+	s.redisClient.Set(ctx, fmt.Sprintf("%s.%s", common.AuthAccessTokenPrefix, accessToken), tenant.ApiKey, time.Duration(expiresIn)*time.Second)
 
 	return map[string]interface{}{
 		"access_token": accessToken,
@@ -230,7 +230,7 @@ func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string)
 
 // GetRefreshToken gets an access token
 func (s *tenantService) GetRefreshToken(ctx context.Context, key string, secret string) (map[string]interface{}, error) {
-	tenant, err := s.TenantRepository.Find(key, secret)
+	tenant, err := s.tenantRepository.Find(key, secret)
 	if err != nil {
 		return nil, &appErr.AuthError{
 			Message: "Invalid API key or secret",
@@ -248,7 +248,7 @@ func (s *tenantService) GetRefreshToken(ctx context.Context, key string, secret 
 
 	// save the refresh token to Redis
 	// key: refresh_token.<token string>, value: apiKey
-	s.RedisClient.Set(ctx, fmt.Sprintf("%s.%s", common.AuthRefreshTokenPrefix, refreshToken), tenant.ApiKey, time.Duration(expiresIn)*time.Second)
+	s.redisClient.Set(ctx, fmt.Sprintf("%s.%s", common.AuthRefreshTokenPrefix, refreshToken), tenant.ApiKey, time.Duration(expiresIn)*time.Second)
 
 	return map[string]interface{}{
 		"refresh_token": refreshToken,
@@ -280,8 +280,8 @@ func buildToken(tenant *model.Tenant, e int64) (string, error) {
 // NewTenantService creates a new TenantService
 func NewTenantService(r repository.TenantRepository, s *redis.Client, l *logrus.Logger) TenantService {
 	return &tenantService{
-		TenantRepository: r,
-		RedisClient:      s,
+		tenantRepository: r,
+		redisClient:      s,
 		logger:           l,
 	}
 }
