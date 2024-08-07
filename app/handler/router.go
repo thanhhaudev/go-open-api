@@ -39,6 +39,11 @@ func inject() {
 	routeMap = map[string][]*route{
 		common.ScopeManageUser: {
 			{
+				routeHandler.CreateUser,
+				"/api/v1/users",
+				http.MethodPost,
+			},
+			{
 				routeHandler.GetUsers,
 				"/api/v1/users",
 				http.MethodGet,
@@ -49,14 +54,14 @@ func inject() {
 				http.MethodGet,
 			},
 			{
-				routeHandler.CreateUser,
-				"/api/v1/users",
-				http.MethodPost,
-			},
-			{
 				routeHandler.DeleteUser,
 				"/api/v1/users/{id:[0-9]+}",
 				http.MethodDelete,
+			},
+			{
+				routeHandler.UpdateUser,
+				"/api/v1/users/{id:[0-9]+}",
+				http.MethodPut,
 			},
 		},
 		common.ScopeManageMessage: {},

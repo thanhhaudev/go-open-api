@@ -34,5 +34,5 @@ func NewUserNotFoundError() *UserNotFoundError {
 }
 
 func NewUserAlreadyExistsError() *UserError {
-	return NewUserError("User already exists", http.StatusConflict)
+	return NewUserError("User or email already exists", http.StatusConflict)
 }

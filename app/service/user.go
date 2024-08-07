@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/sirupsen/logrus"
+	"github.com/thanhhaudev/openapi-go/app/command"
 	appErr "github.com/thanhhaudev/openapi-go/app/error"
 	"github.com/thanhhaudev/openapi-go/app/model"
 	"github.com/thanhhaudev/openapi-go/app/repository"
@@ -15,6 +16,7 @@ type (
 		GetUsers() ([]*model.User, error)
 		FindUserByID(id uint) (*model.User, error)
 		CreateUser(user *model.User) (*model.User, error)
+		UpdateUser(id uint, com *command.UserRequest) (*model.User, error)
 		DeleteUser(user *model.User) error
 	}
 
@@ -24,6 +26,39 @@ type (
 		logger                *logrus.Logger
 	}
 )
+
+// UpdateUser updates a user
+func (u userService) UpdateUser(id uint, com *command.UserRequest) (*model.User, error) {
+	user, err := u.userRepository.FindByID(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, appErr.NewUserNotFoundError()
+		}
+
+		return nil, err
+	}
+
+	if user.Email != com.Email {
+		exists, err := u.userRepository.FindByEmail(com.Email)
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
+
+		if exists != nil {
+			return nil, appErr.NewUserAlreadyExistsError()
+		}
+	}
+
+	user.Name = com.Name
+	user.Email = com.Email
+	user.PhoneNumber = com.PhoneNumber
+
+	if err := u.userRepository.Update(user); err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
 
 // DeleteUser deletes a user
 func (u userService) DeleteUser(user *model.User) error {
