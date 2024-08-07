@@ -1,3 +1,5 @@
+DSN := 'mysql://root:rootpwd@tcp(localhost:8989)/playground?charset=utf8&parseTime=True&loc=Local'
+
 build:
 	docker compose -f docker-compose.yaml build --no-cache
 up:
@@ -14,3 +16,7 @@ mysql:
 	docker compose -f docker-compose.yaml exec go_api_db mysql -u root -p
 swag:
 	swag init --parseDependency
+migrate/up:
+	migrate -path tools/setup/migrations -database $(DSN) up
+migrate/down:
+	migrate -path tools/setup/migrations -database $(DSN) down

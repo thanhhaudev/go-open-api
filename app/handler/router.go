@@ -4,32 +4,32 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"github.com/thanhhaudev/openapi-go/app/common"
 	"github.com/thanhhaudev/openapi-go/app/config"
 	"github.com/thanhhaudev/openapi-go/app/datastore/mysql"
-	"github.com/thanhhaudev/openapi-go/app/middleware"
+	"github.com/thanhhaudev/openapi-go/app/repository"
 	"github.com/thanhhaudev/openapi-go/app/util"
 )
 
 var (
-	routeHandler    AppHandler
-	routeMap        map[string][]*route // map[scope][route]
-	routeMiddleware []func(next http.Handler) http.Handler
+	routeHandler AppHandler
+	routeMap     map[string][]*route // map[scope][route]
+	db           *config.Database
+	redisStore   *config.RedisStore
+	logger       *logrus.Logger
+	tenantRepo   repository.TenantRepository
+	userRepo     repository.UserRepository
 )
 
+// inject dependencies
 func inject() {
-	db := config.NewDatabase()
-	redisStore := config.NewRedisStore()
-	logger := config.GetLogger()
-	tenantRepo := mysql.NewTenantRepository(db.Conn)
-	userRepo := mysql.NewUserRepository(db.Conn)
-
-	authMiddleware := middleware.NewAuthMiddleware(tenantRepo, redisStore.Client)
-	routeMiddleware = []func(next http.Handler) http.Handler{
-		authMiddleware.VerifyToken,
-	}
-
+	db = config.NewDatabase()
+	redisStore = config.NewRedisStore()
+	logger = config.GetLogger()
+	tenantRepo = mysql.NewTenantRepository(db.Conn)
+	userRepo = mysql.NewUserRepository(db.Conn)
 	routeHandler = NewAppHandler(
 		NewTenantHandler(tenantRepo, logger, redisStore),
 		NewUserHandler(userRepo, logger),
@@ -39,12 +39,12 @@ func inject() {
 		common.ScopeManageUser: {
 			{
 				routeHandler.GetUsers,
-				"/users",
+				"/api/v1/users",
 				http.MethodGet,
 			},
 			{
 				routeHandler.FindUser,
-				"/users/{id:[0-9]+}",
+				"/api/v1/users/{id:[0-9]+}",
 				http.MethodGet,
 			},
 		},
@@ -57,21 +57,18 @@ func Router() *mux.Router {
 	inject()
 	setupSwagger(router)
 
-	s := router.PathPrefix("/api").Subrouter()
-	s.HandleFunc("/health", func(w http.ResponseWriter, request *http.Request) {
+	router.HandleFunc("/health", func(w http.ResponseWriter, request *http.Request) {
 		util.Response(w, map[string]bool{"ok": true}, http.StatusOK)
 	})
 
-	a := s.PathPrefix("/auth").Subrouter()
-	a.HandleFunc("/access", routeHandler.GetRefreshToken).Methods(http.MethodPost)
-	a.HandleFunc("/exchange", routeHandler.GetAccessToken).Methods(http.MethodPost)
-	a.HandleFunc("/refresh", routeHandler.RefreshAccessToken).Methods(http.MethodPost)
+	router.HandleFunc("/api/auth/access", routeHandler.GetRefreshToken).Methods(http.MethodPost)
+	router.HandleFunc("/api/auth/exchange", routeHandler.GetAccessToken).Methods(http.MethodPost)
+	router.HandleFunc("/api/auth/refresh", routeHandler.RefreshAccessToken).Methods(http.MethodPost)
 
 	// Authenticated routes
-	r := s.PathPrefix("/v1").Subrouter()
-	for _, mw := range routeMiddleware {
-		r.Use(mw)
-	}
+	r := router.NewRoute().Subrouter()
+	r.Use(verifyToken)
+	r.Use(verifyScope)
 
 	// apply routes
 	for _, routes := range routeMap {
@@ -83,7 +80,7 @@ func Router() *mux.Router {
 	return router
 }
 
-// SetupSwagger godoc
+// setupSwagger godoc
 func setupSwagger(r *mux.Router) {
 	r.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),

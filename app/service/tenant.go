@@ -113,6 +113,7 @@ func (s *tenantService) RefreshAccessToken(ctx context.Context, accessToken stri
 	}
 
 	claims["exp"] = time.Now().Unix() + common.AuthAccessTokenExpire
+	claims["scopes"] = tenant.GetScopes()
 	token = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	newAccessToken, err := token.SignedString([]byte(tenant.ApiSecret))
 	if err != nil {
@@ -133,6 +134,7 @@ func (s *tenantService) RefreshAccessToken(ctx context.Context, accessToken stri
 	return map[string]interface{}{
 		"access_token": newAccessToken,
 		"expires_in":   common.AuthAccessTokenExpire,
+		"scopes":       tenant.GetScopes(),
 	}, nil
 }
 
@@ -222,7 +224,7 @@ func (s *tenantService) GetAccessToken(ctx context.Context, refreshToken string)
 	return map[string]interface{}{
 		"access_token": accessToken,
 		"expires_in":   expiresIn,
-		"scope":        tenant.Scope,
+		"scopes":       tenant.GetScopes(),
 	}, nil
 }
 
@@ -251,7 +253,6 @@ func (s *tenantService) GetRefreshToken(ctx context.Context, key string, secret 
 	return map[string]interface{}{
 		"refresh_token": refreshToken,
 		"expires_in":    expiresIn,
-		"scope":         tenant.Scope,
 	}, nil
 }
 
@@ -266,6 +267,7 @@ func buildToken(tenant *model.Tenant, e int64) (string, error) {
 	claims["iat"] = now
 	claims["nbf"] = now
 	claims["exp"] = now + e // 7 days
+	claims["scopes"] = tenant.GetScopes()
 
 	refreshToken, err := token.SignedString([]byte(tenant.ApiSecret))
 	if err != nil {
