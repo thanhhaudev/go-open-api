@@ -1,4 +1,21 @@
 definitions:
+  command.AccessTokenRequest:
+    properties:
+      api_key:
+        type: string
+      api_secret:
+        type: string
+    type: object
+  command.ExchangeTokenRequest:
+    properties:
+      refresh_token:
+        type: string
+    type: object
+  command.RefreshTokenRequest:
+    properties:
+      access_token:
+        type: string
+    type: object
   command.UserRequest:
     properties:
       email:
@@ -23,23 +40,6 @@ definitions:
       code:
         type: integer
       message:
-        type: string
-    type: object
-  handler.AccessTokenRequest:
-    properties:
-      api_key:
-        type: string
-      api_secret:
-        type: string
-    type: object
-  handler.ExchangeTokenRequest:
-    properties:
-      refresh_token:
-        type: string
-    type: object
-  handler.RefreshTokenRequest:
-    properties:
-      access_token:
         type: string
     type: object
   model.User:
@@ -79,7 +79,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handler.AccessTokenRequest'
+          $ref: '#/definitions/command.AccessTokenRequest'
       produces:
       - application/json
       responses:
@@ -109,7 +109,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handler.ExchangeTokenRequest'
+          $ref: '#/definitions/command.ExchangeTokenRequest'
       produces:
       - application/json
       responses:
@@ -139,7 +139,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handler.RefreshTokenRequest'
+          $ref: '#/definitions/command.RefreshTokenRequest'
       produces:
       - application/json
       responses:

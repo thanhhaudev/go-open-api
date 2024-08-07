@@ -34,7 +34,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.AccessTokenRequest"
+                            "$ref": "#/definitions/command.AccessTokenRequest"
                         }
                     }
                 ],
@@ -80,7 +80,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.ExchangeTokenRequest"
+                            "$ref": "#/definitions/command.ExchangeTokenRequest"
                         }
                     }
                 ],
@@ -126,7 +126,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.RefreshTokenRequest"
+                            "$ref": "#/definitions/command.RefreshTokenRequest"
                         }
                     }
                 ],
@@ -405,6 +405,33 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "command.AccessTokenRequest": {
+            "type": "object",
+            "properties": {
+                "api_key": {
+                    "type": "string"
+                },
+                "api_secret": {
+                    "type": "string"
+                }
+            }
+        },
+        "command.ExchangeTokenRequest": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "command.RefreshTokenRequest": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
         "command.UserRequest": {
             "type": "object",
             "properties": {
@@ -440,33 +467,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.AccessTokenRequest": {
-            "type": "object",
-            "properties": {
-                "api_key": {
-                    "type": "string"
-                },
-                "api_secret": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.ExchangeTokenRequest": {
-            "type": "object",
-            "properties": {
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "handler.RefreshTokenRequest": {
-            "type": "object",
-            "properties": {
-                "access_token": {
                     "type": "string"
                 }
             }
