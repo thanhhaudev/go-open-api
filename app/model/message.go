@@ -6,11 +6,11 @@ import (
 )
 
 type Message struct {
-	ID        int    `json:"id"`
-	Subject   string `json:"subject"`
-	Content   string `json:"content"`
-	Sender    *User  `json:"sender"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
+	ID        int            `gorm:"primaryKey" json:"-" swaggerignore:"true"`
+	Subject   string         `json:"subject" example:"Hello"`
+	Content   string         `json:"content" example:"Hello, how are you?"`
+	Sender    *User          `gorm:"foreignKey:ID" json:"sender"`
+	CreatedAt time.Time      `json:"created_at" example:"2021-01-01T00:00:00Z"`
+	UpdatedAt time.Time      `json:"updatedAt" example:"2021-01-01T00:00:00Z"`
+	DeletedAt gorm.DeletedAt `gorm:"index" swaggerignore:"true"`
 }

@@ -20,11 +20,43 @@ type userHandler struct {
 	logger      *logrus.Logger
 }
 
+// UserMessages	godoc
+// @Summary     Retrieve all messages of a user
+// @Tags        user
+// @Accept      json
+// @Produce     json
+// @Param       id path int true "User ID"
+// @Success     201  {object} model.UserMessage
+// @Failure     404  {object} error.UserError
+// @Failure     400  {object} error.UserError
+// @Failure     500  {object} error.UserError
+// @Router      /api/v1/users/{id}/messages [get]
+// @Security 	Bearer
+func (u userHandler) UserMessages(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	data, err := u.userService.GetUserMessages(uint(id))
+	if err != nil {
+		var notFound *appErr.UserNotFoundError
+		if errors.As(err, &notFound) {
+			util.Response(w, err, http.StatusNotFound)
+
+			return
+		}
+
+		util.Response(w, err, http.StatusBadRequest)
+		return
+	}
+
+	util.Response(w, data, http.StatusOK)
+}
+
 // UpdateUser	godoc
 // @Summary     Update a user
 // @Tags        user
 // @Accept      json
 // @Produce     json
+// @Param       id path int true "User ID"
 // @Param       request body command.UserRequest true "Payload"
 // @Success     201  {object} model.User
 // @Failure     404  {object} error.UserError
@@ -72,6 +104,7 @@ func (u userHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 // @Tags        user
 // @Accept      json
 // @Produce     json
+// @Param       id path int true "User ID"
 // @Success     200  {object} map[string]bool
 // @Failure     404  {object} error.UserError
 // @Failure     400  {object} error.UserError

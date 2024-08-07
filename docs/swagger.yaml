@@ -42,6 +42,23 @@ definitions:
       message:
         type: string
     type: object
+  model.Message:
+    properties:
+      content:
+        example: Hello, how are you?
+        type: string
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      sender:
+        $ref: '#/definitions/model.User'
+      subject:
+        example: Hello
+        type: string
+      updatedAt:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+    type: object
   model.User:
     properties:
       created_at:
@@ -62,6 +79,26 @@ definitions:
       updatedAt:
         example: "2021-01-01T00:00:00Z"
         type: string
+    type: object
+  model.UserMessage:
+    properties:
+      created_at:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      message:
+        $ref: '#/definitions/model.Message'
+      read:
+        example: false
+        type: boolean
+      readAt:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      updatedAt:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      userId:
+        example: 1
+        type: integer
     type: object
 info:
   contact: {}
@@ -223,6 +260,12 @@ paths:
     delete:
       consumes:
       - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -286,6 +329,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
       - description: Payload
         in: body
         name: request
@@ -314,6 +362,40 @@ paths:
       security:
       - Bearer: []
       summary: Update a user
+      tags:
+      - user
+  /api/v1/users/{id}/messages:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.UserMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error.UserError'
+      security:
+      - Bearer: []
+      summary: Retrieve all messages of a user
       tags:
       - user
 securityDefinitions:

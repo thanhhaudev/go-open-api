@@ -25,6 +25,7 @@ type (
 		CreateUser(http.ResponseWriter, *http.Request)
 		UpdateUser(http.ResponseWriter, *http.Request)
 		DeleteUser(http.ResponseWriter, *http.Request)
+		UserMessages(http.ResponseWriter, *http.Request)
 	}
 
 	MessageHandler interface {

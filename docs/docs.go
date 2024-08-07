@@ -320,6 +320,13 @@ const docTemplate = `{
                 "summary": "Update a user",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Payload",
                         "name": "request",
                         "in": "body",
@@ -372,6 +379,15 @@ const docTemplate = `{
                     "user"
                 ],
                 "summary": "Delete a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -380,6 +396,60 @@ const docTemplate = `{
                             "additionalProperties": {
                                 "type": "boolean"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error.UserError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/error.UserError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error.UserError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{id}/messages": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Retrieve all messages of a user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserMessage"
                         }
                     },
                     "400": {
@@ -471,6 +541,30 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Message": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "example": "Hello, how are you?"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "sender": {
+                    "$ref": "#/definitions/model.User"
+                },
+                "subject": {
+                    "type": "string",
+                    "example": "Hello"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
         "model.User": {
             "type": "object",
             "properties": {
@@ -497,6 +591,34 @@ const docTemplate = `{
                 "updatedAt": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
+                }
+            }
+        },
+        "model.UserMessage": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "message": {
+                    "$ref": "#/definitions/model.Message"
+                },
+                "read": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "readAt": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "userId": {
+                    "type": "integer",
+                    "example": 1
                 }
             }
         }

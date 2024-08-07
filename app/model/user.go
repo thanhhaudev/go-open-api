@@ -21,14 +21,13 @@ func (u User) TableName() string {
 }
 
 type UserMessage struct {
-	ID        uint           `gorm:"primarykey" json:"id"`
-	UserID    uint           `gorm:"primarykey" json:"userId"`
-	Message   *Message       `json:"message"`
-	Read      bool           `json:"read"`
-	ReadAt    *time.Time     `json:"readAt"`
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updatedAt"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deletedAt"`
+	UserID    uint           `gorm:"primarykey" json:"userId" example:"1"`
+	Message   *Message       `gorm:"foreignKey:ID" json:"message"`
+	Read      bool           `json:"read" example:"false"`
+	ReadAt    *time.Time     `json:"readAt" example:"2021-01-01T00:00:00Z"`
+	CreatedAt time.Time      `json:"created_at" example:"2021-01-01T00:00:00Z"`
+	UpdatedAt time.Time      `json:"updatedAt" example:"2021-01-01T00:00:00Z"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deletedAt" swaggerignore:"true"`
 }
 
 func (u UserMessage) TableName() string {

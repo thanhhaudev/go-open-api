@@ -25,6 +25,7 @@ type (
 	}
 
 	UserMessageRepository interface {
+		FindByUserID(userId uint) ([]*model.UserMessage, error)
 		FindByID(userId, id uint) (*model.UserMessage, error)
 		Create(userMessage *model.UserMessage) error
 		Update(userMessage *model.UserMessage) error

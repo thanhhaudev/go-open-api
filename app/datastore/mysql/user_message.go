@@ -10,6 +10,20 @@ type userMessageRepository struct {
 	gorm *gorm.DB
 }
 
+func (u userMessageRepository) FindByUserID(userId uint) ([]*model.UserMessage, error) {
+	var userMessages []*model.UserMessage
+
+	err := u.gorm.
+		Preload("Message.Sender"). // eager loading
+		Where("user_id = ?", userId).
+		Find(&userMessages).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return userMessages, nil
+}
+
 func (u userMessageRepository) FindByID(userId, id uint) (*model.UserMessage, error) {
 	userMessage := &model.UserMessage{}
 
@@ -48,6 +62,7 @@ func (u userMessageRepository) Delete(userId, id uint) error {
 	return nil
 }
 
+// NewUserMessageRepository creates a new user message repository
 func NewUserMessageRepository(gorm *gorm.DB) repository.UserMessageRepository {
 	return &userMessageRepository{
 		gorm: gorm,

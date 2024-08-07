@@ -18,6 +18,8 @@ type (
 		CreateUser(user *model.User) (*model.User, error)
 		UpdateUser(id uint, com *command.UserRequest) (*model.User, error)
 		DeleteUser(id uint) error
+
+		GetUserMessages(id uint) ([]*model.UserMessage, error)
 	}
 
 	userService struct {
@@ -26,6 +28,19 @@ type (
 		logger                *logrus.Logger
 	}
 )
+
+func (u userService) GetUserMessages(id uint) ([]*model.UserMessage, error) {
+	user, err := u.userRepository.FindByID(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, appErr.NewUserNotFoundError()
+		}
+
+		return nil, err
+	}
+
+	return u.userMessageRepository.FindByUserID(user.ID)
+}
 
 // UpdateUser updates a user
 func (u userService) UpdateUser(id uint, com *command.UserRequest) (*model.User, error) {

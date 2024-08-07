@@ -31,6 +31,7 @@ func inject() {
 	logger = config.GetLogger()
 	tenantRepo = mysql.NewTenantRepository(db.Conn)
 	userRepo = mysql.NewUserRepository(db.Conn)
+	userMessageRepo = mysql.NewUserMessageRepository(db.Conn)
 	routeHandler = NewAppHandler(
 		NewTenantHandler(tenantRepo, logger, redisStore),
 		NewUserHandler(userRepo, userMessageRepo, logger),
@@ -62,6 +63,11 @@ func inject() {
 				routeHandler.UpdateUser,
 				"/api/v1/users/{id:[0-9]+}",
 				http.MethodPut,
+			},
+			{
+				routeHandler.UserMessages,
+				"/api/v1/users/{id:[0-9]+}/messages",
+				http.MethodGet,
 			},
 		},
 		common.ScopeManageMessage: {},

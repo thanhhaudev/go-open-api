@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"gorm.io/gorm/logger"
 	"os"
 	"time"
 
@@ -22,7 +23,9 @@ func NewDatabase() *Database {
 		os.Getenv("DB_NAME"),
 	) // refer https://github.com/go-sql-driver/mysql#dsn-data-source-name for details
 
-	open, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	open, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		panic("Can't connect to database, error=" + err.Error()) // TODO: custom error
 	}
