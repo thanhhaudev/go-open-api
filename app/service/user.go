@@ -14,6 +14,7 @@ type (
 	UserService interface {
 		GetUsers() ([]*model.User, error)
 		FindUserByID(id uint) (*model.User, error)
+		CreateUser(user *model.User) (*model.User, error)
 	}
 
 	userService struct {
@@ -22,6 +23,24 @@ type (
 		logger                *logrus.Logger
 	}
 )
+
+// CreateUser creates a new user
+func (u userService) CreateUser(user *model.User) (*model.User, error) {
+	exists, err := u.userRepository.FindByEmail(user.Email)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err // only return error if it's not a record not found error
+	}
+
+	if exists != nil {
+		return nil, appErr.NewUserAlreadyExistsError()
+	}
+
+	if err := u.userRepository.Create(user); err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
 
 // FindUserByID retrieves a user by ID
 func (u userService) FindUserByID(id uint) (*model.User, error) {

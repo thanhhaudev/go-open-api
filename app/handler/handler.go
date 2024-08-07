@@ -22,6 +22,7 @@ type (
 	UserHandler interface {
 		GetUsers(http.ResponseWriter, *http.Request)
 		FindUser(http.ResponseWriter, *http.Request)
+		CreateUser(http.ResponseWriter, *http.Request)
 	}
 
 	MessageHandler interface {

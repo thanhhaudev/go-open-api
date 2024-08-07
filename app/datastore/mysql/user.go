@@ -32,6 +32,18 @@ func (u userRepository) FindByID(id uint) (*model.User, error) {
 	return user, nil
 }
 
+// FindByEmail retrieves a user by email
+func (u userRepository) FindByEmail(email string) (*model.User, error) {
+	user := &model.User{}
+
+	err := u.gorm.Where("email = ?", email).First(user).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
 func (u userRepository) Create(user *model.User) error {
 	err := u.gorm.Create(user).Error
 	if err != nil {

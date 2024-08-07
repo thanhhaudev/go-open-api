@@ -42,7 +42,7 @@ type (
 // @Router       		/api/auth/refresh [post]
 func (t tenantHandler) RefreshAccessToken(w http.ResponseWriter, r *http.Request) {
 	p := RefreshTokenRequest{}
-	err := util.Inputs(r, &p)
+	err := util.Bind(r, &p)
 	if err != nil {
 		t.logger.WithError(err).Error("Failed to parse request body")
 		util.Response(w, err.Error(), http.StatusBadRequest)
@@ -71,7 +71,7 @@ func (t tenantHandler) RefreshAccessToken(w http.ResponseWriter, r *http.Request
 // @Router       	/api/auth/exchange [post]
 func (t tenantHandler) GetAccessToken(w http.ResponseWriter, r *http.Request) {
 	p := ExchangeTokenRequest{}
-	err := util.Inputs(r, &p)
+	err := util.Bind(r, &p)
 	if err != nil {
 		t.logger.WithError(err).Error("Failed to parse request body")
 		util.Response(w, err.Error(), http.StatusBadRequest)
@@ -100,7 +100,7 @@ func (t tenantHandler) GetAccessToken(w http.ResponseWriter, r *http.Request) {
 // @Router       	/api/auth/access [post]
 func (t tenantHandler) GetRefreshToken(w http.ResponseWriter, r *http.Request) {
 	p := AccessTokenRequest{}
-	err := util.Inputs(r, &p)
+	err := util.Bind(r, &p)
 	if err != nil {
 		t.logger.WithError(err).Error("Failed to parse request body")
 		util.Response(w, err.Error(), http.StatusBadRequest)

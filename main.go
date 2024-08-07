@@ -17,6 +17,13 @@ func init() {
 	}
 }
 
+// @title Swagger Example API
+// @version 1.0
+// @description This is a simple Open API example with Go
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 func main() {
 	// Set routes
 	router := handler.Router()

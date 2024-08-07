@@ -1,4 +1,16 @@
 definitions:
+  command.UserRequest:
+    properties:
+      email:
+        example: test@gmail.com
+        type: string
+      name:
+        example: test
+        type: string
+      phone_number:
+        example: "0123456789"
+        type: string
+    type: object
   error.AuthError:
     properties:
       code:
@@ -12,14 +24,6 @@ definitions:
         type: integer
       message:
         type: string
-    type: object
-  gorm.DeletedAt:
-    properties:
-      time:
-        type: string
-      valid:
-        description: Valid is true if Time is not NULL
-        type: boolean
     type: object
   handler.AccessTokenRequest:
     properties:
@@ -41,22 +45,29 @@ definitions:
   model.User:
     properties:
       created_at:
+        example: "2021-01-01T00:00:00Z"
         type: string
-      deletedAt:
-        $ref: '#/definitions/gorm.DeletedAt'
       email:
+        example: test@gmail.com
         type: string
       id:
+        example: 1
         type: integer
       name:
+        example: test
         type: string
       phone_number:
+        example: "0123456789"
         type: string
       updatedAt:
+        example: "2021-01-01T00:00:00Z"
         type: string
     type: object
 info:
   contact: {}
+  description: This is a simple Open API example with Go
+  title: Swagger Example API
+  version: "1.0"
 paths:
   /api/auth/access:
     post:
@@ -172,6 +183,40 @@ paths:
       summary: Retrieve all users
       tags:
       - user
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/command.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error.UserError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error.UserError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error.UserError'
+      security:
+      - Bearer: []
+      summary: Create a new user
+      tags:
+      - user
   /api/v1/users/{id}:
     get:
       consumes:
@@ -204,4 +249,10 @@ paths:
       summary: Find user by ID
       tags:
       - user
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

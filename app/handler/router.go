@@ -48,6 +48,11 @@ func inject() {
 				"/api/v1/users/{id:[0-9]+}",
 				http.MethodGet,
 			},
+			{
+				routeHandler.CreateUser,
+				"/api/v1/users",
+				http.MethodPost,
+			},
 		},
 		common.ScopeManageMessage: {},
 	}

@@ -23,3 +23,7 @@ func NewUserError(message string, code int) *UserError {
 func NewUserNotFoundError() *UserError {
 	return NewUserError("User not found", http.StatusNotFound)
 }
+
+func NewUserAlreadyExistsError() *UserError {
+	return NewUserError("User already exists", http.StatusConflict)
+}

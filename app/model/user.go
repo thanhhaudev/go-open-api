@@ -7,13 +7,13 @@ import (
 )
 
 type User struct {
-	ID          uint           `gorm:"primarykey" json:"id"`
-	Email       string         `json:"email"`
-	Name        string         `json:"name"`
-	PhoneNumber *string        `gorm:"string" json:"phone_number"`
-	CreatedAt   time.Time      `json:"created_at"`
-	UpdatedAt   time.Time      `json:"updatedAt"`
-	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deletedAt"`
+	ID          uint           `gorm:"primarykey" json:"id" example:"1"`
+	Email       string         `json:"email" example:"test@gmail.com"`
+	Name        string         `json:"name" example:"test"`
+	PhoneNumber *string        `gorm:"string" json:"phone_number" example:"0123456789"`
+	CreatedAt   time.Time      `json:"created_at" example:"2021-01-01T00:00:00Z"`
+	UpdatedAt   time.Time      `json:"updatedAt" example:"2021-01-01T00:00:00Z"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deletedAt" swaggerignore:"true"`
 }
 
 func (u User) TableName() string {
