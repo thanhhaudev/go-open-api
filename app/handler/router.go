@@ -53,6 +53,11 @@ func inject() {
 				"/api/v1/users",
 				http.MethodPost,
 			},
+			{
+				routeHandler.DeleteUser,
+				"/api/v1/users/{id:[0-9]+}",
+				http.MethodDelete,
+			},
 		},
 		common.ScopeManageMessage: {},
 	}

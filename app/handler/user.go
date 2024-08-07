@@ -20,6 +20,41 @@ type userHandler struct {
 	logger      *logrus.Logger
 }
 
+// DeleteUser	godoc
+// @Summary     Delete a user
+// @Tags        user
+// @Accept      json
+// @Produce     json
+// @Success     200  {object} map[string]bool
+// @Failure     404  {object} error.UserError
+// @Failure     400  {object} error.UserError
+// @Failure     500  {object} error.UserError
+// @Router      /api/v1/users/{id} [delete]
+// @Security 	Bearer
+func (u userHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	user, err := u.userService.FindUserByID(uint(id))
+	if err != nil {
+		var notFound *appErr.UserNotFoundError
+		if errors.As(err, &notFound) {
+			util.Response(w, err, http.StatusNotFound)
+
+			return
+		}
+
+		util.Response(w, err, http.StatusBadRequest)
+		return
+	}
+
+	if err := u.userService.DeleteUser(user); err != nil {
+		util.Response(w, err, http.StatusBadRequest)
+		return
+	}
+
+	util.Response(w, map[string]bool{"ok": true}, http.StatusOK)
+}
+
 // CreateUser	godoc
 // @Summary     Create a new user
 // @Tags        user
@@ -77,7 +112,7 @@ func (u userHandler) FindUser(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(vars["id"])
 	data, err := u.userService.FindUserByID(uint(id))
 	if err != nil {
-		var notFound *appErr.UserError
+		var notFound *appErr.UserNotFoundError
 		if errors.As(err, &notFound) {
 			util.Response(w, err, http.StatusNotFound)
 

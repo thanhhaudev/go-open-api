@@ -14,7 +14,7 @@ type (
 		FindByEmail(email string) (*model.User, error)
 		Create(user *model.User) error
 		Update(user *model.User) error
-		Delete(id uint) error
+		Delete(user *model.User) error
 	}
 
 	MessageRepository interface {

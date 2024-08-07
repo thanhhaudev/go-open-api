@@ -62,8 +62,9 @@ func (u userRepository) Update(user *model.User) error {
 	return nil
 }
 
-func (u userRepository) Delete(id uint) error {
-	err := u.gorm.Delete(&model.User{}, id).Error
+// Delete deletes a user
+func (u userRepository) Delete(user *model.User) error {
+	err := u.gorm.Delete(user).Error
 	if err != nil {
 		return err
 	}

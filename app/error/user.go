@@ -19,9 +19,18 @@ func NewUserError(message string, code int) *UserError {
 	}
 }
 
+type UserNotFoundError UserError
+
+func (u UserNotFoundError) Error() string {
+	return u.Message
+}
+
 // NewUserNotFoundError creates a new UserError with message "User not found" and code 404
-func NewUserNotFoundError() *UserError {
-	return NewUserError("User not found", http.StatusNotFound)
+func NewUserNotFoundError() *UserNotFoundError {
+	return &UserNotFoundError{
+		Message: "User not found",
+		Code:    http.StatusNotFound,
+	}
 }
 
 func NewUserAlreadyExistsError() *UserError {

@@ -15,6 +15,7 @@ type (
 		GetUsers() ([]*model.User, error)
 		FindUserByID(id uint) (*model.User, error)
 		CreateUser(user *model.User) (*model.User, error)
+		DeleteUser(user *model.User) error
 	}
 
 	userService struct {
@@ -23,6 +24,15 @@ type (
 		logger                *logrus.Logger
 	}
 )
+
+// DeleteUser deletes a user
+func (u userService) DeleteUser(user *model.User) error {
+	if err := u.userRepository.Delete(user); err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // CreateUser creates a new user
 func (u userService) CreateUser(user *model.User) (*model.User, error) {
