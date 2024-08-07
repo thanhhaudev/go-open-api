@@ -16,7 +16,8 @@ func Response(w http.ResponseWriter, b any, s int) {
 	}
 }
 
-func Inputs(r *http.Request, c any) error {
+// Bind binds request body to struct
+func Bind(r *http.Request, c any) error {
 	err := json.NewDecoder(r.Body).Decode(c)
 	if err != nil {
 		return err
