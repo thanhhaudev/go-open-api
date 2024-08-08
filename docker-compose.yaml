@@ -3,12 +3,10 @@ services:
   api:
     build:
       context: .
-      # Correct the path to your Dockerfile
       dockerfile: .docker/Dockerfile
     container_name: "go_api"
     ports:
       - "8080:3000"
-    # Important to bind/mount your codebase dir to /app dir for live reload
     volumes:
       - ./:/app
     depends_on:
@@ -16,9 +14,11 @@ services:
       - redis
   db:
     image: mysql:5.7
+    platform: linux/amd64
     restart: always
     environment:
       MYSQL_USER: 'dbuser'
+      MYSQL_DATABASE: 'playground'
       MYSQL_PASSWORD: 'dbpwd'
       MYSQL_ROOT_PASSWORD: 'rootpwd'
     container_name: "go_api_db"
