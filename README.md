@@ -1,5 +1,7 @@
 A simple Open API project written in Go.
 
+![screenshot](https://github.com/thanhhaudev/openapi-go/blob/master/docs/screenshot.png?raw=true)
+
 ## Features
 - Simple API endpoints
 - Basic CRUD operations
