@@ -201,6 +201,60 @@
                 }
             }
         },
+        "/api/v1/messages/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "message"
+                ],
+                "summary": "Retrieve a message by its ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Message ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error.MessageError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/error.MessageError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error.MessageError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users": {
             "get": {
                 "security": [
@@ -641,7 +695,7 @@
                     "type": "integer",
                     "example": 1
                 },
-                "receiver": {
+                "receivers": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/model.User"
@@ -713,7 +767,7 @@
                     "type": "integer",
                     "example": 1
                 },
-                "readAt": {
+                "read_at": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
                 },

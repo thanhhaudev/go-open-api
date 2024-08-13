@@ -78,7 +78,7 @@ definitions:
       id:
         example: 1
         type: integer
-      receiver:
+      receivers:
         items:
           $ref: '#/definitions/model.User'
         type: array
@@ -128,7 +128,7 @@ definitions:
       messageId:
         example: 1
         type: integer
-      readAt:
+      read_at:
         example: "2021-01-01T00:00:00Z"
         type: string
       subject:
@@ -270,6 +270,40 @@ paths:
       security:
       - Bearer: []
       summary: Create a new message
+      tags:
+      - message
+  /api/v1/messages/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error.MessageError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error.MessageError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error.MessageError'
+      security:
+      - Bearer: []
+      summary: Retrieve a message by its ID
       tags:
       - message
   /api/v1/users:

@@ -32,7 +32,7 @@ type userHandler struct {
 // @Failure     500  {object} error.UserError
 // @Router      /api/v1/users/{id}/messages [get]
 // @Security 	Bearer
-func (u userHandler) UserMessages(w http.ResponseWriter, r *http.Request) {
+func (u userHandler) GetUserMessages(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 	data, err := u.userService.GetUserMessages(uint(id))
@@ -181,7 +181,7 @@ func (u userHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 // @Failure     500  {object} error.UserError
 // @Router      /api/v1/users/{id} [get]
 // @Security 	Bearer
-func (u userHandler) FindUser(w http.ResponseWriter, r *http.Request) {
+func (u userHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 	data, err := u.userService.FindUserByID(uint(id))
