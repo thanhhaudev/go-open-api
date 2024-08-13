@@ -10,10 +10,14 @@ type messageRepository struct {
 	gorm *gorm.DB
 }
 
+// FindByID finds a message by its ID
 func (m messageRepository) FindByID(id uint) (*model.Message, error) {
 	message := &model.Message{}
 
-	err := m.gorm.First(message, id).Error
+	err := m.gorm.
+		Preload("Sender").
+		Preload("Receivers").
+		First(message, id).Error
 	if err != nil {
 		return nil, err
 	}

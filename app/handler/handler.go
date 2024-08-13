@@ -31,6 +31,7 @@ type (
 
 	MessageHandler interface {
 		CreateMessage(http.ResponseWriter, *http.Request)
+		GetMessage(http.ResponseWriter, *http.Request)
 	}
 
 	// Handler struct

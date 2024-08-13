@@ -79,6 +79,11 @@ func inject() {
 				"/api/v1/messages",
 				http.MethodPost,
 			},
+			{
+				routeHandler.GetMessage,
+				"/api/v1/messages/{id:[0-9]+}",
+				http.MethodGet,
+			},
 		},
 	}
 }

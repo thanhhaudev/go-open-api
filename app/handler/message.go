@@ -1,12 +1,16 @@
 package handler
 
 import (
+	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"github.com/thanhhaudev/openapi-go/app/command"
+	appErr "github.com/thanhhaudev/openapi-go/app/error"
 	"github.com/thanhhaudev/openapi-go/app/repository"
 	"github.com/thanhhaudev/openapi-go/app/service"
 	"github.com/thanhhaudev/openapi-go/app/util"
+	"strconv"
 
+	"errors"
 	"fmt"
 	"net/http"
 )
@@ -14,6 +18,38 @@ import (
 type messageHandler struct {
 	messageService service.MessageService
 	logger         *logrus.Logger
+}
+
+// GetMessage		godoc
+// @Summary			Retrieve a message by its ID
+// @Tags			message
+// @Accept 			json
+// @Produce			json
+// @Param       	id path int true "Message ID"
+// @Success     	200  {object} model.Message
+// @Failure     	404  {object} error.MessageError
+// @Failure     	400  {object} error.MessageError
+// @Failure     	500  {object} error.MessageError
+// @Router      	/api/v1/messages/{id} [get]
+// @Security 		Bearer
+func (m messageHandler) GetMessage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	data, err := m.messageService.FindMessageByID(uint(id))
+	if err != nil {
+		var notFound *appErr.MessageNotFoundError
+		if errors.As(err, &notFound) {
+			util.Response(w, err, http.StatusNotFound)
+
+			return
+		}
+
+		util.Response(w, err, http.StatusBadRequest)
+
+		return
+	}
+
+	util.Response(w, data, http.StatusOK)
 }
 
 // CreateMessage	godoc

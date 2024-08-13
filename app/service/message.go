@@ -7,14 +7,17 @@ import (
 	appErr "github.com/thanhhaudev/openapi-go/app/error"
 	"github.com/thanhhaudev/openapi-go/app/model"
 	"github.com/thanhhaudev/openapi-go/app/repository"
-	"net/http"
+	"gorm.io/gorm"
 
+	"errors"
 	"fmt"
+	"net/http"
 )
 
 type (
 	MessageService interface {
 		CreateMessage(com command.MessageRequest) (*model.Message, error)
+		FindMessageByID(id uint) (*model.Message, error)
 	}
 
 	messageService struct {
@@ -25,6 +28,20 @@ type (
 		logger                *logrus.Logger
 	}
 )
+
+// FindMessageByID finds a message by its ID
+func (m messageService) FindMessageByID(id uint) (*model.Message, error) {
+	message, err := m.messageRepository.FindByID(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, appErr.NewMessageNotFoundError()
+		}
+
+		return nil, err
+	}
+
+	return message, nil
+}
 
 // CreateMessage creates a new message
 func (m messageService) CreateMessage(com command.MessageRequest) (*model.Message, error) {
@@ -73,10 +90,10 @@ func (m messageService) CreateMessage(com command.MessageRequest) (*model.Messag
 
 	// Create a new message
 	message := &model.Message{
-		Sender:   sender,
-		Receiver: receivers,
-		Subject:  com.Subject,
-		Content:  com.Content,
+		Sender:    sender,
+		Receivers: receivers,
+		Subject:   com.Subject,
+		Content:   com.Content,
 	}
 
 	// Save the message

@@ -10,6 +10,7 @@ type userMessageRepository struct {
 	gorm *gorm.DB
 }
 
+// FindByUserID finds user messages by user ID
 func (u userMessageRepository) FindByUserID(userId uint) ([]*model.UserMessage, error) {
 	var userMessages []*model.UserMessage
 
@@ -25,10 +26,14 @@ func (u userMessageRepository) FindByUserID(userId uint) ([]*model.UserMessage, 
 	return userMessages, nil
 }
 
+// FindByID finds a user message by its ID
 func (u userMessageRepository) FindByID(userId, id uint) (*model.UserMessage, error) {
 	userMessage := &model.UserMessage{}
 
-	err := u.gorm.Where("user_id = ? AND id = ?", userId, id).First(userMessage).Error
+	err := u.gorm.
+		Select("user_messages.*, messages.subject, messages.content").
+		Joins("JOIN messages ON user_messages.message_id = messages.id").
+		Where("user_messages.user_id = ? AND messages.id = ?", userId, id).First(userMessage).Error
 	if err != nil {
 		return nil, err
 	}
