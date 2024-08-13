@@ -697,21 +697,29 @@
         "model.UserMessage": {
             "type": "object",
             "properties": {
+                "content": {
+                    "type": "string",
+                    "example": "Hello, how are you?"
+                },
                 "created_at": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
+                },
+                "is_read": {
+                    "type": "boolean",
+                    "example": false
                 },
                 "messageId": {
                     "type": "integer",
                     "example": 1
                 },
-                "read": {
-                    "type": "boolean",
-                    "example": false
-                },
                 "readAt": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
+                },
+                "subject": {
+                    "type": "string",
+                    "example": "Hello"
                 },
                 "updated_at": {
                     "type": "string",

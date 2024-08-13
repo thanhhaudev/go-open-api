@@ -14,7 +14,8 @@ func (u userMessageRepository) FindByUserID(userId uint) ([]*model.UserMessage, 
 	var userMessages []*model.UserMessage
 
 	err := u.gorm.
-		Preload("Message.Sender"). // eager loading
+		Select("user_messages.*, messages.subject, messages.content").
+		Joins("JOIN messages ON user_messages.message_id = messages.id").
 		Where("user_id = ?", userId).
 		Find(&userMessages).Error
 	if err != nil {

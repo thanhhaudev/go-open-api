@@ -23,7 +23,9 @@ func (u User) TableName() string {
 type UserMessage struct {
 	UserID    uint           `gorm:"primarykey" json:"userId" example:"1"`
 	MessageID uint           `gorm:"primarykey" json:"messageId" example:"1"`
-	Read      bool           `json:"read" example:"false"`
+	Subject   string         `gorm:"embedded;embeddedPrefix:message_" json:"subject" example:"Hello"`
+	Content   string         `gorm:"embedded;embeddedPrefix:message_" json:"content" example:"Hello, how are you?"`
+	IsRead    bool           `json:"is_read" example:"false"`
 	ReadAt    *time.Time     `json:"readAt" example:"2021-01-01T00:00:00Z"`
 	CreatedAt time.Time      `json:"created_at" example:"2021-01-01T00:00:00Z"`
 	UpdatedAt time.Time      `json:"updated_at" example:"2021-01-01T00:00:00Z"`

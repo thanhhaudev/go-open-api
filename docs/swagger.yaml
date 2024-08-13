@@ -116,17 +116,23 @@ definitions:
     type: object
   model.UserMessage:
     properties:
+      content:
+        example: Hello, how are you?
+        type: string
       created_at:
         example: "2021-01-01T00:00:00Z"
         type: string
+      is_read:
+        example: false
+        type: boolean
       messageId:
         example: 1
         type: integer
-      read:
-        example: false
-        type: boolean
       readAt:
         example: "2021-01-01T00:00:00Z"
+        type: string
+      subject:
+        example: Hello
         type: string
       updated_at:
         example: "2021-01-01T00:00:00Z"
