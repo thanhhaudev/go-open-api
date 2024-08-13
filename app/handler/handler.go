@@ -9,6 +9,7 @@ type (
 	AppHandler interface {
 		TenantHandler
 		UserHandler
+		MessageHandler
 	}
 
 	// TenantHandler interface
@@ -29,13 +30,14 @@ type (
 	}
 
 	MessageHandler interface {
-		// TODO
+		CreateMessage(http.ResponseWriter, *http.Request)
 	}
 
 	// Handler struct
 	appHandler struct {
 		TenantHandler
 		UserHandler
+		MessageHandler
 	}
 
 	route struct {
@@ -46,9 +48,10 @@ type (
 )
 
 // NewAppHandler godoc
-func NewAppHandler(t TenantHandler, u UserHandler) AppHandler {
+func NewAppHandler(t TenantHandler, u UserHandler, m MessageHandler) AppHandler {
 	return &appHandler{
-		TenantHandler: t,
-		UserHandler:   u,
+		TenantHandler:  t,
+		UserHandler:    u,
+		MessageHandler: m,
 	}
 }

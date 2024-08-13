@@ -12,8 +12,8 @@ type User struct {
 	Name        string         `json:"name" example:"test"`
 	PhoneNumber *string        `gorm:"string" json:"phone_number" example:"0123456789"`
 	CreatedAt   time.Time      `json:"created_at" example:"2021-01-01T00:00:00Z"`
-	UpdatedAt   time.Time      `json:"updatedAt" example:"2021-01-01T00:00:00Z"`
-	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deletedAt" swaggerignore:"true"`
+	UpdatedAt   time.Time      `json:"updated_at" example:"2021-01-01T00:00:00Z"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deleted_at" swaggerignore:"true"`
 }
 
 func (u User) TableName() string {
@@ -22,12 +22,12 @@ func (u User) TableName() string {
 
 type UserMessage struct {
 	UserID    uint           `gorm:"primarykey" json:"userId" example:"1"`
-	Message   *Message       `gorm:"foreignKey:ID" json:"message"`
+	MessageID uint           `gorm:"primarykey" json:"messageId" example:"1"`
 	Read      bool           `json:"read" example:"false"`
 	ReadAt    *time.Time     `json:"readAt" example:"2021-01-01T00:00:00Z"`
 	CreatedAt time.Time      `json:"created_at" example:"2021-01-01T00:00:00Z"`
-	UpdatedAt time.Time      `json:"updatedAt" example:"2021-01-01T00:00:00Z"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deletedAt" swaggerignore:"true"`
+	UpdatedAt time.Time      `json:"updated_at" example:"2021-01-01T00:00:00Z"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at" swaggerignore:"true"`
 }
 
 func (u UserMessage) TableName() string {

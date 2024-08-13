@@ -22,6 +22,7 @@ var (
 	tenantRepo      repository.TenantRepository
 	userRepo        repository.UserRepository
 	userMessageRepo repository.UserMessageRepository
+	messageRepo     repository.MessageRepository
 )
 
 // inject dependencies
@@ -31,10 +32,12 @@ func inject() {
 	logger = config.GetLogger()
 	tenantRepo = mysql.NewTenantRepository(db.Conn)
 	userRepo = mysql.NewUserRepository(db.Conn)
+	messageRepo = mysql.NewMessageRepository(db.Conn)
 	userMessageRepo = mysql.NewUserMessageRepository(db.Conn)
 	routeHandler = NewAppHandler(
 		NewTenantHandler(tenantRepo, logger, redisStore),
 		NewUserHandler(userRepo, userMessageRepo, logger),
+		NewMessageHandler(userRepo, userMessageRepo, messageRepo, logger),
 	)
 
 	routeMap = map[string][]*route{
@@ -70,7 +73,13 @@ func inject() {
 				http.MethodGet,
 			},
 		},
-		common.ScopeManageMessage: {},
+		common.ScopeManageMessage: {
+			{
+				routeHandler.CreateMessage,
+				"/api/v1/messages",
+				http.MethodPost,
+			},
+		},
 	}
 }
 

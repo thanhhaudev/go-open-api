@@ -170,7 +170,7 @@ func (u userHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // FindUser		godoc
-// @Summary     Find user by ID
+// @Summary     Retrieves a user by id
 // @Tags        user
 // @Accept      json
 // @Produce     json

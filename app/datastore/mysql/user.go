@@ -21,6 +21,7 @@ func (u userRepository) FindAll() ([]*model.User, error) {
 	return r, nil
 }
 
+// FindByID retrieves a user by id
 func (u userRepository) FindByID(id uint) (*model.User, error) {
 	user := &model.User{}
 
@@ -30,6 +31,18 @@ func (u userRepository) FindByID(id uint) (*model.User, error) {
 	}
 
 	return user, nil
+}
+
+// FindByIDs retrieves a list of users by ids
+func (u userRepository) FindByIDs(ids []uint) ([]*model.User, error) {
+	var r []*model.User
+
+	err := u.gorm.Find(&r, ids).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return r, nil
 }
 
 // FindByEmail retrieves a user by email

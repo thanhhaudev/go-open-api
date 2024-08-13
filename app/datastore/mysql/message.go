@@ -22,7 +22,7 @@ func (m messageRepository) FindByID(id uint) (*model.Message, error) {
 }
 
 func (m messageRepository) Create(message *model.Message) error {
-	err := m.gorm.Create(message).Error
+	err := m.gorm.Omit("Sender").Create(message).Error
 	if err != nil {
 		return err
 	}

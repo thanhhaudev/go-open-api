@@ -153,6 +153,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/messages": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "message"
+                ],
+                "summary": "Create a new message",
+                "parameters": [
+                    {
+                        "description": "Payload",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/command.MessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/error.MessageError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/error.MessageError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/error.MessageError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users": {
             "get": {
                 "security": [
@@ -265,7 +321,7 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Find user by ID",
+                "summary": "Retrieves a user by id",
                 "parameters": [
                     {
                         "type": "integer",
@@ -494,6 +550,32 @@ const docTemplate = `{
                 }
             }
         },
+        "command.MessageRequest": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "example": "Hello, how are you?"
+                },
+                "receiver_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "example": [
+                        2
+                    ]
+                },
+                "sender_id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "subject": {
+                    "type": "string",
+                    "example": "Hello!"
+                }
+            }
+        },
         "command.RefreshTokenRequest": {
             "type": "object",
             "properties": {
@@ -530,6 +612,17 @@ const docTemplate = `{
                 }
             }
         },
+        "error.MessageError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "error.UserError": {
             "type": "object",
             "properties": {
@@ -552,14 +645,29 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
                 },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "receiver": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.User"
+                    }
+                },
                 "sender": {
-                    "$ref": "#/definitions/model.User"
+                    "description": "read-only",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.User"
+                        }
+                    ]
                 },
                 "subject": {
                     "type": "string",
                     "example": "Hello"
                 },
-                "updatedAt": {
+                "updated_at": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
                 }
@@ -588,7 +696,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "0123456789"
                 },
-                "updatedAt": {
+                "updated_at": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
                 }
@@ -601,8 +709,9 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
                 },
-                "message": {
-                    "$ref": "#/definitions/model.Message"
+                "messageId": {
+                    "type": "integer",
+                    "example": 1
                 },
                 "read": {
                     "type": "boolean",
@@ -612,7 +721,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
                 },
-                "updatedAt": {
+                "updated_at": {
                     "type": "string",
                     "example": "2021-01-01T00:00:00Z"
                 },

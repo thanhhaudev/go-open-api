@@ -11,6 +11,24 @@ definitions:
       refresh_token:
         type: string
     type: object
+  command.MessageRequest:
+    properties:
+      content:
+        example: Hello, how are you?
+        type: string
+      receiver_ids:
+        example:
+        - 2
+        items:
+          type: integer
+        type: array
+      sender_id:
+        example: 1
+        type: integer
+      subject:
+        example: Hello!
+        type: string
+    type: object
   command.RefreshTokenRequest:
     properties:
       access_token:
@@ -35,6 +53,13 @@ definitions:
       message:
         type: string
     type: object
+  error.MessageError:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
   error.UserError:
     properties:
       code:
@@ -50,12 +75,21 @@ definitions:
       created_at:
         example: "2021-01-01T00:00:00Z"
         type: string
+      id:
+        example: 1
+        type: integer
+      receiver:
+        items:
+          $ref: '#/definitions/model.User'
+        type: array
       sender:
-        $ref: '#/definitions/model.User'
+        allOf:
+        - $ref: '#/definitions/model.User'
+        description: read-only
       subject:
         example: Hello
         type: string
-      updatedAt:
+      updated_at:
         example: "2021-01-01T00:00:00Z"
         type: string
     type: object
@@ -76,7 +110,7 @@ definitions:
       phone_number:
         example: "0123456789"
         type: string
-      updatedAt:
+      updated_at:
         example: "2021-01-01T00:00:00Z"
         type: string
     type: object
@@ -85,15 +119,16 @@ definitions:
       created_at:
         example: "2021-01-01T00:00:00Z"
         type: string
-      message:
-        $ref: '#/definitions/model.Message'
+      messageId:
+        example: 1
+        type: integer
       read:
         example: false
         type: boolean
       readAt:
         example: "2021-01-01T00:00:00Z"
         type: string
-      updatedAt:
+      updated_at:
         example: "2021-01-01T00:00:00Z"
         type: string
       userId:
@@ -196,6 +231,41 @@ paths:
       summary: Retrieve a new access token
       tags:
       - auth
+  /api/v1/messages:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/command.MessageRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Message'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error.MessageError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/error.MessageError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/error.MessageError'
+      security:
+      - Bearer: []
+      summary: Create a new message
+      tags:
+      - message
   /api/v1/users:
     get:
       consumes:
@@ -322,7 +392,7 @@ paths:
             $ref: '#/definitions/error.UserError'
       security:
       - Bearer: []
-      summary: Find user by ID
+      summary: Retrieves a user by id
       tags:
       - user
     put:
