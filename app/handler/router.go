@@ -53,7 +53,7 @@ func inject() {
 				http.MethodGet,
 			},
 			{
-				routeHandler.FindUser,
+				routeHandler.GetUser,
 				"/api/v1/users/{id:[0-9]+}",
 				http.MethodGet,
 			},
@@ -68,7 +68,7 @@ func inject() {
 				http.MethodPut,
 			},
 			{
-				routeHandler.UserMessages,
+				routeHandler.GetUserMessages,
 				"/api/v1/users/{id:[0-9]+}/messages",
 				http.MethodGet,
 			},

@@ -22,11 +22,11 @@ type (
 	// UserHandler interface
 	UserHandler interface {
 		GetUsers(http.ResponseWriter, *http.Request)
-		FindUser(http.ResponseWriter, *http.Request)
+		GetUser(http.ResponseWriter, *http.Request)
 		CreateUser(http.ResponseWriter, *http.Request)
 		UpdateUser(http.ResponseWriter, *http.Request)
 		DeleteUser(http.ResponseWriter, *http.Request)
-		UserMessages(http.ResponseWriter, *http.Request)
+		GetUserMessages(http.ResponseWriter, *http.Request)
 	}
 
 	MessageHandler interface {
