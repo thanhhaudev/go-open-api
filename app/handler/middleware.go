@@ -128,16 +128,14 @@ func verifyToken(next http.Handler) http.Handler {
 		scopes := claims["scopes"]
 		if len(scopes.([]interface{})) == 0 {
 			// Why is this assertion to []interface{}?
-			// Because the scopes are []string and the jwt.MapClaims is a map[string]interface{}
+			// When GetScopes() returns []string, but when it is assigned to jwt.MapClaims it becomes []interface{} because jwt.MapClaims is a map[string]interface{}
 			util.Response(w, appErr.NewForbiddenError(), http.StatusForbidden)
 
 			return
 		}
 
-		// swallow the context and add the scopes
-		nr := r.WithContext(context.WithValue(ctx, common.AuthAccessTokenScopes, scopes))
-		// assign the new context with the scopes to the original request
-		*r = *nr
+		// add scopes to the context
+		r = r.WithContext(context.WithValue(ctx, common.AuthAccessTokenScopes, scopes))
 
 		next.ServeHTTP(w, r)
 	})
