@@ -4,10 +4,10 @@ import (
 	"errors"
 
 	"github.com/sirupsen/logrus"
-	"github.com/thanhhaudev/openapi-go/app/command"
-	appErr "github.com/thanhhaudev/openapi-go/app/error"
-	"github.com/thanhhaudev/openapi-go/app/model"
-	"github.com/thanhhaudev/openapi-go/app/repository"
+	"github.com/thanhhaudev/go-open-api/app/command"
+	appErr "github.com/thanhhaudev/go-open-api/app/error"
+	"github.com/thanhhaudev/go-open-api/app/model"
+	"github.com/thanhhaudev/go-open-api/app/repository"
 	"gorm.io/gorm"
 )
 

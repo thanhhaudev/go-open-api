@@ -1,8 +1,8 @@
 package mysql
 
 import (
-	"github.com/thanhhaudev/openapi-go/app/model"
-	"github.com/thanhhaudev/openapi-go/app/repository"
+	"github.com/thanhhaudev/go-open-api/app/model"
+	"github.com/thanhhaudev/go-open-api/app/repository"
 	"gorm.io/gorm"
 )
 

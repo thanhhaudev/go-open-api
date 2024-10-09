@@ -1,4 +1,4 @@
-module github.com/thanhhaudev/openapi-go
+module github.com/thanhhaudev/go-open-api
 
 go 1.22.5
 

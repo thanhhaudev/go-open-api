@@ -3,11 +3,11 @@ package handler
 import (
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
-	"github.com/thanhhaudev/openapi-go/app/command"
-	appErr "github.com/thanhhaudev/openapi-go/app/error"
-	"github.com/thanhhaudev/openapi-go/app/repository"
-	"github.com/thanhhaudev/openapi-go/app/service"
-	"github.com/thanhhaudev/openapi-go/app/util"
+	"github.com/thanhhaudev/go-open-api/app/command"
+	appErr "github.com/thanhhaudev/go-open-api/app/error"
+	"github.com/thanhhaudev/go-open-api/app/repository"
+	"github.com/thanhhaudev/go-open-api/app/service"
+	"github.com/thanhhaudev/go-open-api/app/util"
 	"strconv"
 
 	"errors"

@@ -4,11 +4,11 @@ import (
 	"net/http"
 
 	"github.com/sirupsen/logrus"
-	"github.com/thanhhaudev/openapi-go/app/command"
-	"github.com/thanhhaudev/openapi-go/app/config"
-	"github.com/thanhhaudev/openapi-go/app/repository"
-	"github.com/thanhhaudev/openapi-go/app/service"
-	"github.com/thanhhaudev/openapi-go/app/util"
+	"github.com/thanhhaudev/go-open-api/app/command"
+	"github.com/thanhhaudev/go-open-api/app/config"
+	"github.com/thanhhaudev/go-open-api/app/repository"
+	"github.com/thanhhaudev/go-open-api/app/service"
+	"github.com/thanhhaudev/go-open-api/app/util"
 )
 
 type tenantHandler struct {

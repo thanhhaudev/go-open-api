@@ -1,6 +1,6 @@
 package repository
 
-import "github.com/thanhhaudev/openapi-go/app/model"
+import "github.com/thanhhaudev/go-open-api/app/model"
 
 type (
 	TenantRepository interface {

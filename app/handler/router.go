@@ -6,11 +6,11 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	httpSwagger "github.com/swaggo/http-swagger"
-	"github.com/thanhhaudev/openapi-go/app/common"
-	"github.com/thanhhaudev/openapi-go/app/config"
-	"github.com/thanhhaudev/openapi-go/app/datastore/mysql"
-	"github.com/thanhhaudev/openapi-go/app/repository"
-	"github.com/thanhhaudev/openapi-go/app/util"
+	"github.com/thanhhaudev/go-open-api/app/common"
+	"github.com/thanhhaudev/go-open-api/app/config"
+	"github.com/thanhhaudev/go-open-api/app/datastore/mysql"
+	"github.com/thanhhaudev/go-open-api/app/repository"
+	"github.com/thanhhaudev/go-open-api/app/util"
 )
 
 var (

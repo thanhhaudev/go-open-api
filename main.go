@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/joho/godotenv"
-	"github.com/thanhhaudev/openapi-go/app/handler"
-	_ "github.com/thanhhaudev/openapi-go/docs"
+	"github.com/thanhhaudev/go-open-api/app/handler"
+	_ "github.com/thanhhaudev/go-open-api/docs"
 )
 
 func init() {

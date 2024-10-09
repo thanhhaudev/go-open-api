@@ -10,10 +10,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
-	"github.com/thanhhaudev/openapi-go/app/common"
-	appErr "github.com/thanhhaudev/openapi-go/app/error"
-	"github.com/thanhhaudev/openapi-go/app/model"
-	"github.com/thanhhaudev/openapi-go/app/repository"
+	"github.com/thanhhaudev/go-open-api/app/common"
+	appErr "github.com/thanhhaudev/go-open-api/app/error"
+	"github.com/thanhhaudev/go-open-api/app/model"
+	"github.com/thanhhaudev/go-open-api/app/repository"
 )
 
 type (

@@ -8,9 +8,9 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/gorilla/mux"
-	"github.com/thanhhaudev/openapi-go/app/common"
-	appErr "github.com/thanhhaudev/openapi-go/app/error"
-	"github.com/thanhhaudev/openapi-go/app/util"
+	"github.com/thanhhaudev/go-open-api/app/common"
+	appErr "github.com/thanhhaudev/go-open-api/app/error"
+	"github.com/thanhhaudev/go-open-api/app/util"
 )
 
 // verifyScope middleware
